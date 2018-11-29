@@ -1,0 +1,49 @@
+;<hotkey>
+;  [name]
+;  <application>[|argument0...[|argumentN]]
+;  Example: notepad.exe|C:\Users\osh\AppData\Local\MultiClip.History\Data\..\multiclip.hotkeys
+;---------------------------------------
+Control+Oem3
+  <MultiClip.Show>
+
+Control+Shift+T
+  <MultiClip.ToPlainText>
+
+Control+Shift+K
+  <MultiClip.ShowHotKeys>
+
+Control+Shift+Q
+  <MultiClip.Rehook>
+
+Control+Shift+F7
+  Spell Checker
+  E:\My Utils\SpellChecker\ClipboardSpellChecker.exe|
+
+Control+Alt+T
+  Translit Mapper
+  csws.exe|Q:\Extras\Utils\TranslitMapper.cs
+
+Control+Shift+X
+  Format Clipboard XML
+  csws.exe|Q:\Extras\Utils\FormatClipboardXml.cs
+
+Control+F3
+  Search Everything
+  Everything.exe|
+
+Control+Shift+I
+  Ukrainian I
+  csws.exe|Q:\Extras\Utils\TranslitMapper.cs char ukr-i
+
+Control+Shift+Oemtilde
+  Ukrainian Є
+  csws.exe|Q:\Extras\Utils\TranslitMapper.cs char ukr-e
+
+Control+Shift+Alt+I
+  Ukrainian Ї
+  csws.exe|Q:\Extras\Utils\TranslitMapper.cs char ukr-ii
+
+Control+Shift+E
+  Restart Explorer
+  csws.exe|Q:\Extras\Utils\RestartExplorer.cs
+
