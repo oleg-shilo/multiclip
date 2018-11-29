@@ -40,4 +40,8 @@ These some of the strong MultiClip features:
 ## Usage
 
 - Press `` CTRL+` `` to popup clipboard history selection dialog
-  ![](docs/selection.png)
+  ![](https://github.com/oleg-shilo/multiclip/blob/master/docs/selection.png)
+
+- Select `settings` in the tray icon menu to popup the settings dialog:
+![](https://github.com/oleg-shilo/multiclip/blob/master/docs/menu.png)
+![](https://github.com/oleg-shilo/multiclip/blob/master/docs/config.png)

@@ -1,0 +1,7 @@
+/.gitignore
+/.vs
+*.csdat
+**/bin/Debug/**
+**/bin/Release/**
+**/obj/**
+/MultiClip/*.user
