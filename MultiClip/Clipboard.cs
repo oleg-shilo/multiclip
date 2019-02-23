@@ -15,35 +15,46 @@ namespace Win32
     {
         [DllImport("user32.dll")]
         public static extern IntPtr SetForegroundWindow(IntPtr hWnd);
+
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
     }
 
     public class Clipboard
     {
-
         [DllImport("user32.dll")]
         static extern bool OpenClipboard(IntPtr hWndNewOwner);
+
         [DllImport("user32.dll")]
         static extern bool CloseClipboard();
+
         [DllImport("user32.dll")]
         static extern bool EmptyClipboard();
+
         [DllImport("user32.dll")]
         static extern uint EnumClipboardFormats(uint format);
+
         [DllImport("user32.dll")]
         static extern IntPtr GetClipboardData(uint uFormat);
+
         [DllImport("user32.dll")]
         static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
+
         [DllImport("kernel32.dll")]
         static extern IntPtr GlobalAlloc(uint uFlags, UIntPtr dwBytes);
+
         [DllImport("kernel32.dll")]
         static extern IntPtr GlobalLock(IntPtr hMem);
+
         [DllImport("kernel32.dll")]
         static extern IntPtr GlobalUnlock(IntPtr hMem);
+
         [DllImport("kernel32.dll")]
         static extern IntPtr GlobalFree(IntPtr hMem);
+
         [DllImport("kernel32.dll")]
         static extern UIntPtr GlobalSize(IntPtr hMem);
+
         const uint GMEM_DDESHARE = 0x2000;
         const uint GMEM_MOVEABLE = 0x2;
 
@@ -58,11 +69,20 @@ namespace Win32
 
         public class LastSessionErrorDetectedException : Exception
         {
-            public LastSessionErrorDetectedException() { }
-            public LastSessionErrorDetectedException(string message) : base(message) { }
+            public LastSessionErrorDetectedException()
+            {
+            }
+
+            public LastSessionErrorDetectedException(string message) : base(message)
+            {
+            }
         }
 
-        static string ErrorLog = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "reading.log");
+        // UI will use this static class for browsing history and `GetExecutingAssembly` may return invalid path (GAC)
+        // but because server is always invoked as a process then it is safe to use `GetEntryAssembly`.
+        static string ErrorLog = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "reading.log");
+
+        // static string ErrorLog = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "reading.log");
 
         static void BackupLog(string logFile)
         {
@@ -70,7 +90,7 @@ namespace Win32
             {
                 bool hasReadingErrors = File.ReadAllLines(logFile)
                                             .Any(x => x.EndsWith("started -> ")
-                                                   || x.EndsWith("Error"));
+                                                 || x.EndsWith("Error"));
 
                 if (hasReadingErrors)
                 {
@@ -129,7 +149,7 @@ namespace Win32
             using (var readingLog = new StreamWriter(ErrorLog))
             {
                 readingLog.WriteLine(ErrorLog);
-                "".StartsWith("", StringComparison.Ordinal);
+
                 var result = new Dictionary<uint, byte[]>();
                 try
                 {
@@ -177,6 +197,7 @@ namespace Win32
                 return result;
             }
         }
+
         public static string[] GetDropFiles(byte[] bytes)
         {
             var result = new List<string>();
@@ -204,7 +225,6 @@ namespace Win32
         //[SecurityCritical]
         public static byte[] GetBytes(uint format)
         {
-
             IntPtr pos = IntPtr.Zero;
             try
             {
@@ -215,7 +235,7 @@ namespace Win32
                     if (gLock == IntPtr.Zero)
                         return null;
 
-                    var length = (int) GlobalSize(pos);
+                    var length = (int)GlobalSize(pos);
                     if (length > 0)
                     {
                         var buffer = new byte[length];
@@ -231,7 +251,6 @@ namespace Win32
                     try { GlobalUnlock(pos); }
                     catch { }
             }
-
         }
 
         public static IEnumerable<uint> GetFormats()
@@ -247,7 +266,7 @@ namespace Win32
         {
             if (data.Length > 0)
             {
-                IntPtr alloc = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, (UIntPtr) data.Length);
+                IntPtr alloc = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, (UIntPtr)data.Length);
                 if (alloc != IntPtr.Zero)
                 {
                     IntPtr gLock = GlobalLock(alloc);
@@ -274,7 +293,6 @@ namespace Win32
             {
                 if (OpenClipboard(IntPtr.Zero))
                 {
-
                     try
                     {
                         foreach (var format in GetFormats())
@@ -353,8 +371,10 @@ namespace Win32
         // Methods
         [DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern bool ChangeClipboardChain(IntPtr hWndRemove, IntPtr hWndNewNext);
+
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
+
         [DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SetClipboardViewer(IntPtr hWnd);
 

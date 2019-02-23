@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using MultiClip;
-using System.Threading.Tasks;
 using Clipboard = Win32.Clipboard;
 
 internal class ClipboardHistory
@@ -47,7 +47,7 @@ internal class ClipboardHistory
                 Task.Factory.StartNew(() =>
                 {
                     Async.Run(MakeSnapshot)
-                         .WaitFor(3000,
+                         .WaitFor(20000, // no need to rush, let convenient debugging, but reset if hangs 
                                   onTimeout: () => clipboardChanged.Reset());
                 });
             }
@@ -127,20 +127,20 @@ internal class ClipboardHistory
     }
 
     static Dictionary<uint, string> uniqunessFormats = (
-            // "0000C009.DataObject," +
-            // "0000C003.OwnerLink," +
-            // "0000C013.Ole Private Data," +
-            // "0000C00E.Object Descriptor," +
-            // "0000C004.Native," +
-            // "00000007.00000010.Locale," +
-            "0000000D.UnicodeText," +
-            // "0000C00B.Embed Source," +
-            "00000008.DeviceIndependentBitmap," +
-            "00000001.Text," +
-            // "0000C07E.Rich Text Format," +
-            // "00000003.MetaFilePict," + //always different even for the virtually same clipboard content
-            "00000007.OEMText," +
-            "0000C140.HTML Format")
+           // "0000C009.DataObject," +
+           // "0000C003.OwnerLink," +
+           // "0000C013.Ole Private Data," +
+           // "0000C00E.Object Descriptor," +
+           // "0000C004.Native," +
+           // "00000007.00000010.Locale," +
+           "0000000D.UnicodeText," +
+           // "0000C00B.Embed Source," +
+           "00000008.DeviceIndependentBitmap," +
+           "00000001.Text," +
+           // "0000C07E.Rich Text Format," +
+           // "00000003.MetaFilePict," + //always different even for the virtually same clipboard content
+           "00000007.OEMText," +
+           "0000C140.HTML Format")
         .Split(',')
         .ToDictionary(x => uint.Parse(x.Split('.').First(), NumberStyles.HexNumber));
 

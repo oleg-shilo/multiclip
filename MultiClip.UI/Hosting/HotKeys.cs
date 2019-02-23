@@ -24,21 +24,12 @@ namespace MultiClip.UI
         static string hotKeysMapping = Path.Combine(Globals.DataDir, @"..\multiclip.hotkeys");
         static internal Dictionary<string, Action> EmbeddedHandlers = new Dictionary<string, Action>();
 
-        public static void Bind(HotKeys engine)
+        public static void Bind(HotKeys engine, ToolStripMenuItem rootMenu)
         {
-            Bind(engine, hotKeysMapping);
+            Bind(engine, rootMenu, hotKeysMapping);
         }
 
-        public static void Reset_Old(HotKeys engine)
-        {
-            if (engine.Started)
-            {
-                engine.UnregisterAll();
-                Bind(engine, hotKeysMapping);
-            }
-        }
-
-        public static void Bind(HotKeys engine, string mappingFile)
+        public static void Bind(HotKeys engine, ToolStripMenuItem rootMenu, string mappingFile)
         {
             if (engine.Started)
             {
@@ -46,6 +37,8 @@ namespace MultiClip.UI
 
                 if (File.Exists(mappingFile))
                 {
+                    TrayIcon.InvokeMenu.DropDownItems.Clear();
+
                     foreach (HotKeyBinding item in LoadFrom(mappingFile))
                     {
                         try
@@ -70,17 +63,19 @@ namespace MultiClip.UI
                                 string args = item.Args;
 
                                 handler = () =>
-                                            {
-                                                try
-                                                {
-                                                    Process.Start(app, args);
-                                                }
-                                                catch (Exception e)
-                                                {
-                                                    System.Windows.MessageBox.Show(e.Message, "MultiClip - " + handlerName);
-                                                }
-                                            };
+                                           {
+                                               try
+                                               {
+                                                   Process.Start(app, args);
+                                               }
+                                               catch (Exception e)
+                                               {
+                                                   System.Windows.MessageBox.Show(e.Message, "MultiClip - " + handlerName);
+                                               }
+                                           };
                             }
+
+                            rootMenu.DropDownItems.Add(handlerName, null, (s, e) => handler());
                             engine.Bind(modifiers, key, handler);
                         }
                         catch { }
@@ -168,12 +163,13 @@ Ctrl+Shift+Q
 ;---------------------------------------");
         }
 
-        public class HotKeyBinding 
+        public class HotKeyBinding
         {
             public string Name { get; set; }
             public string HotKey { get; set; }
             public string Application { get; set; }
             public string Args { get; set; }
+
             public override string ToString()
             {
                 return Name;
@@ -227,7 +223,7 @@ Ctrl+Shift+Q
             {
                 foreach (var line in File.ReadAllLines(mappingFile).Where(x => !x.StartsWith(";") && !x.IsEmpty()))
                 {
-                    if (!line.StartsWith(" ")) //hot key   
+                    if (!line.StartsWith(" ")) //hot key
                     {
                         //e.g. Ctrl+Shift+K
                         currentKey = line.Replace("Ctrl", "Control");
@@ -267,6 +263,7 @@ Ctrl+Shift+Q
     public class HotKeys
     {
         static HotKeys instance;
+
         static public HotKeys Instance
         {
             get

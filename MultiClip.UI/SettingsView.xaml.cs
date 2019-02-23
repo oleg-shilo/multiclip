@@ -39,7 +39,7 @@ namespace MultiClip.UI
                 {
                     activeView = null;
 
-                    HotKeysMapping.Bind(HotKeys.Instance);
+                    HotKeysMapping.Bind(HotKeys.Instance, TrayIcon.InvokeMenu);
                 }
             }
         }

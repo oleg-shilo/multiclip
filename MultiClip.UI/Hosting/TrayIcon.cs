@@ -1,10 +1,10 @@
 using System;
 using System.Drawing;
 using System.Reflection;
-using NotifyIcon = System.Windows.Forms.NotifyIcon;
-using ContextMenuStrip = System.Windows.Forms.ContextMenuStrip;
-using MultiClip.UI.Properties;
 using System.Windows.Forms;
+using MultiClip.UI.Properties;
+using ContextMenuStrip = System.Windows.Forms.ContextMenuStrip;
+using NotifyIcon = System.Windows.Forms.NotifyIcon;
 
 namespace MultiClip.UI
 {
@@ -15,6 +15,7 @@ namespace MultiClip.UI
         static public EventHandler ShowSettings;
         static public EventHandler ShowHistory;
         static public EventHandler Exit;
+        static public ToolStripMenuItem InvokeMenu;
 
         static NotifyIcon ni;
 
@@ -52,6 +53,9 @@ namespace MultiClip.UI
             ni.ContextMenuStrip = new ContextMenuStrip();
             ni.ContextMenuStrip.Items.Add("Open", null, ShowHistory);
             ni.ContextMenuStrip.Items.Add("Settings", null, ShowSettings);
+            ni.ContextMenuStrip.Items.Add("-");
+            InvokeMenu = (ToolStripMenuItem)ni.ContextMenuStrip.Items.Add("Invoke");
+            // invoke.DropDownItems.Add();
             // #if DEBUG
             ni.ContextMenuStrip.Items.Add("-");
             ni.ContextMenuStrip.Items.Add("Reset", null, Rehook);

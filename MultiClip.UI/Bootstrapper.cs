@@ -5,9 +5,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using MultiClip.UI.Utils;
 using System.Windows;
 using Microsoft.Win32;
+using MultiClip.UI.Utils;
 
 namespace MultiClip.UI
 {
@@ -38,7 +38,7 @@ namespace MultiClip.UI
             HotKeysMapping.EmbeddedHandlers["<MultiClip.ShowHotKeys>"] = HotKeysView.Popup;
             HotKeysMapping.EmbeddedHandlers["<MultiClip.Reset>"] = ClipboardMonitor.Restart;
 
-            HotKeysMapping.Bind(hotKeys);
+            HotKeysMapping.Bind(hotKeys, TrayIcon.InvokeMenu);
 
             var timer = new System.Windows.Threading.DispatcherTimer();
             timer.Tick += (s, e) => { ClipboardMonitor.Test(); TrayIcon.RefreshIcon(); };
