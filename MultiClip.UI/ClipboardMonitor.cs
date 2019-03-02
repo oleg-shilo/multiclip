@@ -1,4 +1,3 @@
-using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Win32;
 
 namespace MultiClip.UI
 {
@@ -18,6 +18,7 @@ namespace MultiClip.UI
         static ClipboardMonitor()
         {
             SystemEvents.PowerModeChanged += OnPowerChange;
+            SystemEvents.SessionEnded += OnSysShutdown;
 
             try
             {
@@ -36,7 +37,7 @@ namespace MultiClip.UI
                 try
                 {
                     StartServer("-start " + (clear ? "-clearall" : "")).WaitForExit();
-                    if (!stopping)
+                    if (!stopping && !shutdownRequested)
                         Start(); //it crashed or was killed so resurrect it
                 }
                 catch { }
@@ -78,7 +79,7 @@ namespace MultiClip.UI
                 {
                     try
                     {
-                        server.WaitForExit(500);
+                        server.WaitForExit(200);
                         if (!server.HasExited)
                             server.Kill();
                     }
@@ -182,6 +183,11 @@ namespace MultiClip.UI
                     Restart();
                     break;
             }
+        }
+
+        static void OnSysShutdown(object s, SessionEndedEventArgs e)
+        {
+            Stop(shutdown: true);
         }
     }
 }
