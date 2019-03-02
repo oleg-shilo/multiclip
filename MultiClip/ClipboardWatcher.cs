@@ -1,4 +1,3 @@
-using MultiClip;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -6,6 +5,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Microsoft.Win32;
+using MultiClip;
 
 /// <summary>
 /// it has to be  window (Form) in order to allow access to the WinProc
@@ -50,6 +51,7 @@ class ClipboardWatcher : Form
     public static IntPtr WindowHandle;
 
     static bool started = false;
+
     static void Start()
     {
         lock (typeof(ClipboardWatcher))
@@ -105,7 +107,6 @@ class ClipboardWatcher : Form
         }
     }
 
-
     public ClipboardWatcher()
     {
         this.InitializeComponent();
@@ -116,6 +117,7 @@ class ClipboardWatcher : Form
 
     static internal int ChangesCount = 0;
     static internal bool IsTestingMode = false;
+
     void NotifyChanged()
     {
         try
@@ -170,9 +172,9 @@ class ClipboardWatcher : Form
 
         //Cannot start minimized as it will be visible floating over the taskbar.
         //Need to start normal but this in turn will steal the current focus.
-        //Thus need to restor focus in the GotFocus handler
-        //this.WindowState = FormWindowState.Minimized; 
-        
+        //Thus need to restore focus in the GotFocus handler
+        //this.WindowState = FormWindowState.Minimized;
+
         this.healthCheckTimer.Interval = 1000 * 15;
         this.healthCheckTimer.Enabled = true;
 
@@ -182,7 +184,7 @@ class ClipboardWatcher : Form
             Init();
         };
 
-        this.GotFocus += (s, e)=>
+        this.GotFocus += (s, e) =>
         {
             Win32.Desktop.SetForegroundWindow(h); //it is important to return the focus back to the desktop window as this one always steals it at startup
         };
@@ -195,6 +197,7 @@ class ClipboardWatcher : Form
 
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
+
     [DllImport("User32.dll")]
     protected static extern int SetClipboardViewer(int hWndNewViewer);
 
