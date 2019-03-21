@@ -36,9 +36,15 @@ namespace MultiClip.UI
             {
                 try
                 {
-                    StartServer("-start " + (clear ? "-clearall" : "")).WaitForExit();
                     if (!stopping && !shutdownRequested)
+                    {
+                        StartServer("-start " + (clear ? "-clearall" : "")).WaitForExit();
+
+                        // if the server exited because of the system shutdown
+                        // let some time so UI also processes shutdown event.
+                        Thread.Sleep(2000);
                         Start(); //it crashed or was killed so resurrect it
+                    }
                 }
                 catch { }
             });
