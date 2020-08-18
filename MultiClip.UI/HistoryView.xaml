@@ -14,7 +14,7 @@
     PreviewKeyDown="Window_PreviewKeyDown"
     ShowInTaskbar="False"
     Topmost="True"
-    WindowStartupLocation="CenterOwner"
+    WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
     <Grid>
