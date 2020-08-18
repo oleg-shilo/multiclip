@@ -11,12 +11,12 @@ using MultiClip;
 /// <summary>
 /// it has to be  window (Form) in order to allow access to the WinProc
 /// </summary>
-class ClipboardWatcher : Form
+internal class ClipboardWatcher : Form
 {
-    IntPtr nextClipboardViewer;
+    private IntPtr nextClipboardViewer;
     static public Action OnClipboardChanged;
 
-    static ClipboardWatcher dialog;
+    private static ClipboardWatcher dialog;
 
     static public void InUiThread(Action action)
     {
@@ -26,7 +26,7 @@ class ClipboardWatcher : Form
             dialog.Invoke(action);
     }
 
-    static bool enabled;
+    private static bool enabled;
 
     static new public bool Enabled
     {
@@ -50,9 +50,9 @@ class ClipboardWatcher : Form
 
     public static IntPtr WindowHandle;
 
-    static bool started = false;
+    private static bool started = false;
 
-    static void Start()
+    private static void Start()
     {
         lock (typeof(ClipboardWatcher))
         {
@@ -90,7 +90,7 @@ class ClipboardWatcher : Form
         }
     }
 
-    static void Stop()
+    private static void Stop()
     {
         lock (typeof(ClipboardWatcher))
         {
@@ -118,7 +118,7 @@ class ClipboardWatcher : Form
     static internal int ChangesCount = 0;
     static internal bool IsTestingMode = false;
 
-    void NotifyChanged()
+    private void NotifyChanged()
     {
         try
         {
@@ -155,12 +155,12 @@ class ClipboardWatcher : Form
     //    }
     //}
 
-    System.Windows.Forms.Timer healthCheckTimer;
+    private System.Windows.Forms.Timer healthCheckTimer;
 
     [DllImport("user32.dll", SetLastError = true)]
-    static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+    private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
-    void InitializeComponent()
+    private void InitializeComponent()
     {
         this.healthCheckTimer = new System.Windows.Forms.Timer();
 
@@ -175,7 +175,7 @@ class ClipboardWatcher : Form
         //Thus need to restore focus in the GotFocus handler
         //this.WindowState = FormWindowState.Minimized;
 
-        this.healthCheckTimer.Interval = 1000 * 15;
+        this.healthCheckTimer.Interval = 1000 * 30;
         this.healthCheckTimer.Enabled = true;
 
         this.Load += (s, e) =>
@@ -201,12 +201,12 @@ class ClipboardWatcher : Form
     [DllImport("User32.dll")]
     protected static extern int SetClipboardViewer(int hWndNewViewer);
 
-    void Init()
+    private void Init()
     {
         nextClipboardViewer = (IntPtr)SetClipboardViewer((int)Handle);
     }
 
-    void Uninit()
+    private void Uninit()
     {
         ChangeClipboardChain(Handle, nextClipboardViewer);
     }
