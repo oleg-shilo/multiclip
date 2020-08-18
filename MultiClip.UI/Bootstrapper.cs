@@ -13,7 +13,7 @@ namespace MultiClip.UI
 {
     public class Bootstrapper
     {
-        HotKeys hotKeys = HotKeys.Instance;
+        private HotKeys hotKeys = HotKeys.Instance;
 
         public void Run()
         {
@@ -41,8 +41,15 @@ namespace MultiClip.UI
             HotKeysMapping.Bind(hotKeys, TrayIcon.InvokeMenu);
 
             var timer = new System.Windows.Threading.DispatcherTimer();
-            timer.Tick += (s, e) => { ClipboardMonitor.Test(); TrayIcon.RefreshIcon(); };
-            timer.Interval = TimeSpan.FromMinutes(1);
+            timer.Tick += (s, e) =>
+            {
+                ClipboardMonitor.Test();
+                TrayIcon.RefreshIcon();
+            };
+
+            //timer.Interval = TimeSpan.FromMinutes(1);
+
+            timer.Interval = TimeSpan.FromSeconds(21);
             timer.Start();
 
             if (justCreated)
@@ -61,7 +68,7 @@ namespace MultiClip.UI
             }
         }
 
-        void Close()
+        private void Close()
         {
             try
             {

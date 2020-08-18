@@ -11,9 +11,9 @@ using Microsoft.Win32;
 
 namespace MultiClip.UI
 {
-    class ClipboardMonitor
+    internal class ClipboardMonitor
     {
-        static string multiClipServerExe = Path.Combine(Path.GetDirectoryName(Globals.DataDir), "multiclip.svr.exe");
+        private static string multiClipServerExe = Path.Combine(Path.GetDirectoryName(Globals.DataDir), "multiclip.svr.exe");
 
         static ClipboardMonitor()
         {
@@ -31,7 +31,7 @@ namespace MultiClip.UI
         public static void Start(bool clear = false)
         {
             Stop();
-
+            Thread.Sleep(1000);
             Task.Factory.StartNew(() =>
             {
                 try
@@ -42,15 +42,18 @@ namespace MultiClip.UI
 
                         // if the server exited because of the system shutdown
                         // let some time so UI also processes shutdown event.
-                        Thread.Sleep(2000);
-                        Start(); //it crashed or was killed so resurrect it
+                        Thread.Sleep(5000);
+
+                        var runningServers = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(multiClipServerExe));
+                        if (!runningServers.Any())
+                            Start(); //it crashed or was killed so resurrect it
                     }
                 }
                 catch { }
             });
         }
 
-        static Process StartServer(string args)
+        private static Process StartServer(string args)
         {
             var p = new Process();
 
@@ -64,8 +67,8 @@ namespace MultiClip.UI
             return p;
         }
 
-        static bool shutdownRequested = false;
-        static bool stopping = false;
+        private static bool shutdownRequested = false;
+        private static bool stopping = false;
 
         public static void Stop(bool shutdown = false)
         {
@@ -120,16 +123,16 @@ namespace MultiClip.UI
         }
 
         [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
-        static int lastRestart = Environment.TickCount;
+        private static int lastRestart = Environment.TickCount;
 
         public static void Test()
         {
-            if ((Environment.TickCount - lastRestart) > TimeSpan.FromMinutes(6).Milliseconds)
+            if ((Environment.TickCount - lastRestart) > TimeSpan.FromMinutes(6).TotalMilliseconds)
             {
                 Restart();
             }
@@ -137,28 +140,24 @@ namespace MultiClip.UI
             var wnd = FindWindow(null, Globals.ClipboardWatcherWindow);
             if (wnd != null)
             {
-                bool failed = TestClipboard();
-                bool nonresponsive = !Task.Factory.StartNew(() =>
-                {
-                    failed = (0 == SendMessage(wnd, Globals.WM_MULTICLIPTEST, IntPtr.Zero, IntPtr.Zero));
-                })
-                .Wait(1000);
+                bool success = TestClipboard(wnd);
 
-                if (failed || nonresponsive)
+                if (!success)
                     Restart();
             }
         }
 
-        static bool TestClipboard()
+        private static bool TestClipboard(IntPtr wnd)
         {
-            //do some test clip[board read/write
-            return true;
+            var success = (0 != SendMessage(wnd, Globals.WM_MULTICLIPTEST, IntPtr.Zero, IntPtr.Zero));
+            // or do some test clipboard read/write
+            return success;
         }
 
         public static void ClearAll()
         {
             Directory.GetDirectories(Globals.DataDir, "*", SearchOption.TopDirectoryOnly)
-            .ForEach(dir => dir.TryDeleteDir());
+                     .ForEach(dir => dir.TryDeleteDir());
         }
 
         public static void ClearDuplicates()
@@ -181,7 +180,7 @@ namespace MultiClip.UI
             }
         }
 
-        static void OnPowerChange(object s, PowerModeChangedEventArgs e)
+        private static void OnPowerChange(object s, PowerModeChangedEventArgs e)
         {
             switch (e.Mode)
             {
@@ -191,7 +190,7 @@ namespace MultiClip.UI
             }
         }
 
-        static void OnSysShutdown(object s, SessionEndedEventArgs e)
+        private static void OnSysShutdown(object s, SessionEndedEventArgs e)
         {
             Stop(shutdown: true);
         }
