@@ -19,10 +19,8 @@ namespace MultiClip.UI
         {
             bool justCreated = SettingsView.EnsureDefaults();
 
-            if (!SettingsViewModel.Load().RestoreHistoryAtStartup)
-                ClipboardMonitor.Start(clear: true);
-            else
-                ClipboardMonitor.Start(clear: false);
+            bool clearAtStartup = !SettingsViewModel.Load().RestoreHistoryAtStartup;
+            ClipboardMonitor.Start(clearAtStartup);
 
             TrayIcon.ShowHistory = (s, a) => HistoryView.Popup();
             TrayIcon.ShowSettings = (s, a) => SettingsView.Popup();
@@ -44,6 +42,8 @@ namespace MultiClip.UI
             timer.Tick += (s, e) => { ClipboardMonitor.Test(); TrayIcon.RefreshIcon(); };
             timer.Interval = TimeSpan.FromMinutes(1);
             timer.Start();
+
+            var test2 = "The quick brown fox jumps over a lazy dog" + DateTime.Now;
 
             if (justCreated)
                 SettingsView.Popup(); //can pop it up without any side effect only after all messaging is initialized

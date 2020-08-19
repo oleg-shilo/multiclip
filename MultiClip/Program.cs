@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MultiClip.Server;
 
 namespace MultiClip
 {
@@ -13,6 +14,7 @@ namespace MultiClip
         [STAThread]
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             // Debug.Assert(false);
 
             if (args.Contains("-start"))
@@ -39,6 +41,11 @@ namespace MultiClip
             }
         }
 
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Log.WriteLine($"{nameof(CurrentDomain_UnhandledException)}: {e}");
+        }
+
         static void KillAll()
         {
             var runningServers = Process.GetProcessesByName("multiclip.svr");
@@ -61,7 +68,7 @@ namespace MultiClip
                     }
                     catch { }
                 }
-                );
+                                );
                 Thread.Sleep(200);
             }
         }
@@ -80,6 +87,8 @@ namespace MultiClip
         {
             try
             {
+                Log.WriteLine("================== Started ==================");
+
                 var monitor = new ClipboardHistory();
 
                 var closeRequest = new EventWaitHandle(false, EventResetMode.ManualReset, Globals.CloseRequestName);

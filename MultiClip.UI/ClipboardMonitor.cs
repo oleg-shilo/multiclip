@@ -18,7 +18,8 @@ namespace MultiClip.UI
         static ClipboardMonitor()
         {
             SystemEvents.PowerModeChanged += OnPowerChange;
-            SystemEvents.SessionEnded += OnSysShutdown;
+            SystemEvents.SessionEnded += SystemEvents_SessionEnded;
+            SystemEvents.SessionEnding += SystemEvents_SessionEnding;
 
             try
             {
@@ -28,30 +29,50 @@ namespace MultiClip.UI
             catch { }
         }
 
+        private static void SystemEvents_SessionEnded(object sender, SessionEndedEventArgs e)
+        {
+            Log.WriteLine("SystemEvents_SessionEnded");
+            OnSysShutdown(null, null);
+        }
+
+        private static void SystemEvents_SessionEnding(object sender, SessionEndingEventArgs e)
+        {
+            Log.WriteLine("SystemEvents_SessionEnding");
+            OnSysShutdown(null, null);
+        }
+
+        public static int ServerRecoveryDelay = 3000;
+
         public static void Start(bool clear = false)
         {
-            Stop();
+            KillAllServers();
 
             Task.Factory.StartNew(() =>
             {
-                try
+                while (!stopping && !shutdownRequested)
                 {
-                    if (!stopping && !shutdownRequested)
+                    try
                     {
                         StartServer("-start " + (clear ? "-clearall" : "")).WaitForExit();
 
+                        Log.WriteLine($"Unexpected server exit.");
+
+                        // KillAllServers();
+
                         // if the server exited because of the system shutdown
                         // let some time so UI also processes shutdown event.
-                        Thread.Sleep(2000);
-                        Start(); //it crashed or was killed so resurrect it
+                        Thread.Sleep(ServerRecoveryDelay);
+
+                        //it crashed or was killed so resurrect it in the next loop
                     }
+                    catch { }
                 }
-                catch { }
             });
         }
 
         static Process StartServer(string args)
         {
+            Log.WriteLine($"Starting server");
             var p = new Process();
 
             p.StartInfo.FileName = multiClipServerExe;
@@ -71,6 +92,8 @@ namespace MultiClip.UI
         {
             stopping = true;
             shutdownRequested = shutdown;
+
+            Log.WriteLine($"Stop(shutdown: {shutdown})");
 
             if (shutdown)
                 SystemEvents.PowerModeChanged -= OnPowerChange;
@@ -97,6 +120,25 @@ namespace MultiClip.UI
             stopping = false;
         }
 
+        static void KillAllServers()
+        {
+            var runningServers = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(multiClipServerExe));
+            if (runningServers.Any())
+                foreach (var server in runningServers)
+                {
+                    try
+                    {
+                        using (var closeRequest = new EventWaitHandle(false, EventResetMode.ManualReset, Globals.CloseRequestName))
+                            closeRequest.Set();
+
+                        server.WaitForExit(200);
+                        if (!server.HasExited)
+                            server.Kill();
+                    }
+                    catch { }
+                }
+        }
+
         public static void ToPlainText()
         {
             Task.Factory.StartNew(() =>
@@ -114,7 +156,16 @@ namespace MultiClip.UI
             lastRestart = Environment.TickCount;
             try
             {
-                Start(); //it will stop if it is already running
+                Log.Enabled = false;
+                // it will kill any active instance and the monitor loop will
+                // restart the server automatically.
+                KillAllServers();
+
+                Task.Factory.StartNew(() =>
+                {
+                    Thread.Sleep(ServerRecoveryDelay + 1000);
+                    Log.Enabled = true;
+                });
             }
             catch { }
         }
@@ -126,12 +177,16 @@ namespace MultiClip.UI
         public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
         static int lastRestart = Environment.TickCount;
+        static double threshold = TimeSpan.FromMinutes(6).TotalMilliseconds;
 
         public static void Test()
         {
-            if ((Environment.TickCount - lastRestart) > TimeSpan.FromMinutes(6).Milliseconds)
+            var serverRunningPeriod = (Environment.TickCount - lastRestart);
+
+            if (serverRunningPeriod > threshold)
             {
                 Restart();
+                Thread.Sleep(1500);
             }
 
             var wnd = FindWindow(null, Globals.ClipboardWatcherWindow);
@@ -193,6 +248,7 @@ namespace MultiClip.UI
 
         static void OnSysShutdown(object s, SessionEndedEventArgs e)
         {
+            Log.WriteLine($"System shutdown detected. Stopping the server.");
             Stop(shutdown: true);
         }
     }

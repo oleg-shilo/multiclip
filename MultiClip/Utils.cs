@@ -2,9 +2,30 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+
+namespace MultiClip.Server
+{
+    static class Log
+    {
+        static string logFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "server.log");
+
+        public static void WriteLine(string message)
+        {
+            if (File.Exists(logFile) && new FileInfo(logFile).Length > 100 * 1024) // > 100K
+            {
+                if (File.Exists(logFile + ".bak"))
+                    File.Delete(logFile + ".bak");
+                File.Move(logFile, logFile + ".bak");
+            }
+
+            File.AppendAllText(logFile, $"{DateTime.Now.ToString("s")}: {message}{Environment.NewLine}");
+        }
+    }
+}
 
 class BytesHash
 {

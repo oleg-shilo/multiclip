@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
@@ -16,6 +17,8 @@ namespace MultiClip.UI
 
         void Application_Startup(object sender, StartupEventArgs e)
         {
+            Log.WriteLine($"=============== Started =================");
+            Log.WriteLine(Assembly.GetExecutingAssembly().Location);
             //new SettingsView().ShowDialog();return;
             //IMPORTANT: Do not release the mutex. OS will release the mutex on app exit automatically.
             mutex = new Mutex(true, "multiclip.history");

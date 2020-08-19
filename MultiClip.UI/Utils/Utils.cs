@@ -18,6 +18,27 @@ using Forms = System.Windows.Forms;
 
 namespace MultiClip.UI
 {
+    static class Log
+    {
+        public static bool Enabled = true;
+        static string logFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ui.log");
+
+        public static void WriteLine(string message)
+        {
+            if (Enabled)
+            {
+                if (File.Exists(logFile) && new FileInfo(logFile).Length > 100 * 1024) // > 100K
+                {
+                    if (File.Exists(logFile + ".bak"))
+                        File.Delete(logFile + ".bak");
+                    File.Move(logFile, logFile + ".bak");
+                }
+
+                File.AppendAllText(logFile, $"{DateTime.Now.ToString("s")}: {message}{Environment.NewLine}");
+            }
+        }
+    }
+
     static class WindowdExtensions
     {
         public static T GetParent<T>(this object obj) where T : class

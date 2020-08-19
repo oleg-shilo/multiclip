@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MultiClip;
+using MultiClip.Server;
 using Clipboard = Win32.Clipboard;
 
 internal class ClipboardHistory
@@ -39,6 +40,8 @@ internal class ClipboardHistory
 
     public void ScheduleMakeSnapshot()
     {
+        Log.WriteLine($"ScheduleMakeSnapshot. async:{Config.AsyncProcessing}");
+
         if (Config.AsyncProcessing)
         {
             if (false == clipboardChanged.WaitOne(0))
@@ -47,7 +50,7 @@ internal class ClipboardHistory
                 Task.Factory.StartNew(() =>
                 {
                     Async.Run(MakeSnapshot)
-                         .WaitFor(20000, // no need to rush, let convenient debugging, but reset if hangs 
+                         .WaitFor(20000, // no need to rush, let convenient debugging, but reset if hangs
                                   onTimeout: () => clipboardChanged.Reset());
                 });
             }
@@ -348,6 +351,8 @@ internal class ClipboardHistory
     {
         try
         {
+            Log.WriteLine($"SaveSnapshot");
+
             Dictionary<uint, byte[]> clipboard = Win32.Clipboard.GetClipboard();
 
             if (clipboard?.Any() == true)
@@ -448,6 +453,8 @@ internal class ClipboardHistory
 
     public static void LoadSnapshot(string dir)
     {
+        Log.WriteLine(nameof(LoadSnapshot));
+
         lock (typeof(ClipboardHistory))
         {
             try
