@@ -1,8 +1,0 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:MultiClip.UI.Properties">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/MultiClip.UI;component/Rosources.xaml"/>
-    </ResourceDictionary.MergedDictionaries>
-
-</ResourceDictionary>

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30406.217
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiClip.Server", "MultiClip\MultiClip.Server.csproj", "{6DA643C6-E46F-4713-87A1-8DB62EB66C9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiClip.Server", "MultiClip.Server\MultiClip.Server.csproj", "{6DA643C6-E46F-4713-87A1-8DB62EB66C9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiClip", "MultiClip.UI\MultiClip.csproj", "{C1CE4AD5-CB3A-4BCC-A379-9A9515BE86DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiClip", "MultiClip\MultiClip.csproj", "{C1CE4AD5-CB3A-4BCC-A379-9A9515BE86DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
