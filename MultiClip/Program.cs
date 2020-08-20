@@ -48,7 +48,7 @@ namespace MultiClip
 
         static void KillAll()
         {
-            var runningServers = Process.GetProcessesByName("multiclip.svr");
+            var runningServers = Process.GetProcessesByName("multiclip.server");
             if (runningServers.Any())
             {
                 using (var closeRequest = new EventWaitHandle(false, EventResetMode.ManualReset, Globals.CloseRequestName))

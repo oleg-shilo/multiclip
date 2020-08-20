@@ -21,7 +21,9 @@ namespace MultiClip.UI
     static class Log
     {
         public static bool Enabled = true;
-        static string logFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ui.log");
+
+        //static string logFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ui.log");
+        public static string logFile = Path.Combine(Globals.DataDir, "..", "ui.log");
 
         public static void WriteLine(string message)
         {
@@ -144,6 +146,12 @@ namespace MultiClip.UI
 
         [DllImport("kernel32.dll", EntryPoint = "SetLastError")]
         public static extern void SetLastError(int dwErrorCode);
+    }
+
+    internal static class GenericExtensions
+    {
+        public static string GetPath(this Environment.SpecialFolder specialFolder)
+            => Environment.GetFolderPath(specialFolder);
     }
 
     internal static class StringExtensions

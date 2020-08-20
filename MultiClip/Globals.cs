@@ -10,7 +10,8 @@ namespace MultiClip
         {
             Directory.CreateDirectory(DataDir);
         }
-        public static string DataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"MultiClip.History\Data");
+
+        public static string DataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MultiClip.History", "Data");
         public static string CloseRequestName = "multiclip_CloseRequest";
         public static string ClipboardWatcherWindow = "MultiClip_ClipboardWatcherWindow";
         public const int WM_USER = 0x0400;

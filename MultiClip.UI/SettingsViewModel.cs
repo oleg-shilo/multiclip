@@ -1,10 +1,10 @@
-using MultiClip.UI.Properties;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Serialization;
+using MultiClip.UI.Properties;
 
 namespace MultiClip.UI
 {

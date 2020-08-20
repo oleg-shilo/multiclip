@@ -13,7 +13,7 @@ namespace MultiClip.UI
 {
     internal class ClipboardMonitor
     {
-        private static string multiClipServerExe = Path.Combine(Path.GetDirectoryName(Globals.DataDir), "multiclip.svr.exe");
+        private static string multiClipServerExe = Path.Combine(Path.GetDirectoryName(Globals.DataDir), "multiclip.server.exe");
 
         static ClipboardMonitor()
         {
@@ -181,7 +181,6 @@ namespace MultiClip.UI
 
         public static void Test()
         {
-            
             var serverRunningPeriod = (Environment.TickCount - lastRestart);
             if (serverRunningPeriod > threshold)
             {
@@ -192,7 +191,7 @@ namespace MultiClip.UI
             var wnd = FindWindow(null, Globals.ClipboardWatcherWindow);
             if (wnd != null)
             {
-                bool success = TestClipboard();
+                bool success = TestClipboard(wnd);
 
                 if (!success)
                     Restart();

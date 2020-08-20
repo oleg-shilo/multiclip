@@ -216,7 +216,7 @@ internal class ClipboardWatcher : Form
         const int WM_DRAWCLIPBOARD = 0x308;
         const int WM_CHANGECBCHAIN = 0x030D;
         const int WM_ENDSESSION = 0x16;
-        const int WM_QUERYENDSESSION = 0x11;
+        //const int WM_QUERYENDSESSION = 0x11;
 
         switch (m.Msg)
         {

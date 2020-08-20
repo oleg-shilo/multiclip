@@ -47,7 +47,7 @@ namespace MultiClip.UI
 
             //SettingsView.Popup();
             //return;
-            File.Delete(@"MultiClip.exe");
+            File.Delete("multiclip.server.exe");
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
