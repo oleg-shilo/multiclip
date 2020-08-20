@@ -61,8 +61,14 @@ namespace MultiClip.UI
         public static void CentreOnActiveScreen(this Window window, double horizontalShift = 0, double verticalShift = 0)
         {
             var screen = Forms.Screen.FromPoint(Forms.Cursor.Position);
-            window.Left = screen.Bounds.X + ((screen.Bounds.Width - window.ActualWidth) / 2) + horizontalShift;
-            window.Top = screen.Bounds.Y + ((screen.Bounds.Height - window.ActualHeight) / 2) + verticalShift;
+
+            var ttt = window.Left;
+            var eee = window.Top;
+            //if (Forms.Screen.AllScreens.Count() > 1)
+            {
+                window.Left = screen.Bounds.X + ((screen.Bounds.Width - window.ActualWidth) / 2) + horizontalShift;
+                window.Top = screen.Bounds.Y + ((screen.Bounds.Height - window.ActualHeight) / 2) + verticalShift;
+            }
         }
 
         static public IntPtr GetSafeHandle(this Window window) => new WindowInteropHelper(window).Handle;
@@ -140,7 +146,7 @@ namespace MultiClip.UI
         public static extern void SetLastError(int dwErrorCode);
     }
 
-    static class StringExtensions
+    internal static class StringExtensions
     {
         public static Forms.Keys ToKeys(this string keyValue)
         {
@@ -158,7 +164,7 @@ namespace MultiClip.UI
         }
     }
 
-    static class Operations
+    internal static class Operations
     {
         static public void SetClipboardTo(string bufferLocation)
         {
@@ -184,7 +190,7 @@ namespace MultiClip.UI
             catch { } //doesn't matter why we failed, just ignore and continue
         }
 
-        static string CreateShortcut(string destFile, string appPath, string args = null)
+        private static string CreateShortcut(string destFile, string appPath, string args = null)
         {
             Debug.Assert(destFile.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase));
 

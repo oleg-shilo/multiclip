@@ -8,9 +8,9 @@ namespace MultiClip.UI
 {
     public partial class HistoryView : Window
     {
-        HistoryViewModel ViewModel
+        private HistoryViewModel ViewModel
         {
-            get { return (HistoryViewModel) DataContext; }
+            get { return (HistoryViewModel)DataContext; }
             set { DataContext = value; }
         }
 
@@ -21,9 +21,9 @@ namespace MultiClip.UI
             Closed += (s, e) => IsClosed = true;
         }
 
-        bool IsClosed = false;
+        private bool IsClosed = false;
 
-        void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
                 Hide();
@@ -35,19 +35,19 @@ namespace MultiClip.UI
             }
         }
 
-        void Window_Deactivated(object sender, EventArgs e)
+        private void Window_Deactivated(object sender, EventArgs e)
         {
             ViewModel.Items.Clear();
-            Hide();
+            //Hide();
+            CloseIfAny();
 
             // ClipboardMonitor.Restart(); // has nasty artifacts
         }
 
-        static HistoryView activeView;
+        private static HistoryView activeView;
 
         public static void Popup()
         {
-            //while we always hide not close it, it may be closed for the accidental reasons
             if (activeView == null || activeView.IsClosed)
                 activeView = new HistoryView();
 
@@ -58,7 +58,7 @@ namespace MultiClip.UI
 
                 activeView.Show();
 
-                activeView.CentreOnActiveScreen();
+                //activeView.CentreOnActiveScreen();
 
                 activeView.Activate();
             }
@@ -81,7 +81,7 @@ namespace MultiClip.UI
             catch { }
         }
 
-        void History_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void History_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Operations.SetClipboardTo(ViewModel.Selected.Location);
 
@@ -90,7 +90,7 @@ namespace MultiClip.UI
                 wnd.Close();
         }
 
-        void History_Loaded(object sender, RoutedEventArgs e)
+        private void History_Loaded(object sender, RoutedEventArgs e)
         {
             if (History.SelectedIndex == -1)
                 History.SelectedIndex = 0;
