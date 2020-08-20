@@ -35,7 +35,7 @@ These some of the strong MultiClip features:
 
 ## Installation
 
-- Run _multiclip.ui.exe_
+- Run _multiclip.exe_
 
 ## Usage
 
