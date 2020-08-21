@@ -25,6 +25,15 @@ namespace MultiClip.Server
             File.AppendAllText(logFile, $"{DateTime.Now.ToString("s")}: {message}{Environment.NewLine}");
         }
     }
+
+    static class Operations
+    {
+        public static void MsgBox(string message, string caption)
+        {
+            if (Environment.GetEnvironmentVariable("UNDER_CHOCO").IsEmpty())
+                System.Windows.Forms.MessageBox.Show(message, caption);
+        }
+    }
 }
 
 class BytesHash

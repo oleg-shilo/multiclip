@@ -17,6 +17,8 @@ namespace MultiClip.UI
 
         void Application_Startup(object sender, StartupEventArgs e)
         {
+            // Debug.Assert(false);
+
             if (Environment.GetCommandLineArgs().Contains("-kill"))
             {
                 var runningGui = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location))
@@ -65,7 +67,8 @@ namespace MultiClip.UI
 
             //SettingsView.Popup();
             //return;
-            File.Delete("multiclip.server.exe");
+            try { File.Delete("multiclip.server.exe"); } catch { }
+
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 

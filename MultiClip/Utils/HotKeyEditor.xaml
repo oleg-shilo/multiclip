@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/MultiClip.UI;component/Rosources.xaml" />
+                <ResourceDictionary Source="/MultiClip;component/Rosources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Storyboard x:Key="OnLoaded">
@@ -29,7 +29,6 @@
                     <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0" />
                 </DoubleAnimationUsingKeyFrames>
             </Storyboard>
-
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.Triggers>

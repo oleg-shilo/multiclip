@@ -262,13 +262,13 @@ internal class ClipboardHistory
                 }
 
                 if (interactive)
-                    MessageBox.Show("The clipboard monitor is OK.", "MultiClip");
+                    Operations.MsgBox("The clipboard monitor is OK.", "MultiClip");
                 return true;
             }
             else
             {
                 if (interactive)
-                    MessageBox.Show("The clipboard monitor is faulty.", "MultiClip");
+                    Operations.MsgBox("The clipboard monitor is faulty.", "MultiClip");
                 return false;
             }
         }
@@ -301,7 +301,7 @@ internal class ClipboardHistory
         if (latestSnapshot != latestNonTestSnapshot)
         {
             if (interactive)
-                MessageBox.Show($"The clipboard monitor is OK.\nChecking time: {totalWait}", "MultiClip");
+                Operations.MsgBox($"The clipboard monitor is OK.\nChecking time: {totalWait}", "MultiClip");
 
             latestSnapshot.TryDeleteDir();
 
@@ -312,7 +312,7 @@ internal class ClipboardHistory
         else
         {
             if (interactive)
-                MessageBox.Show("The clipboard monitor is faulty.", "MultiClip");
+                Operations.MsgBox("The clipboard monitor is faulty.", "MultiClip");
             return false;
         }
     }
