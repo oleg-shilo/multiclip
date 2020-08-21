@@ -70,7 +70,7 @@ namespace MultiClip.UI
                                                }
                                                catch (Exception e)
                                                {
-                                                   System.Windows.MessageBox.Show(e.Message, "MultiClip - " + handlerName);
+                                                   Operations.MsgBox(e.Message, "MultiClip - " + handlerName);
                                                }
                                            };
                             }
@@ -103,7 +103,7 @@ namespace MultiClip.UI
             }
             catch (Exception e)
             {
-                System.Windows.MessageBox.Show(e.ToString(), "MultiClip.UI");
+                Operations.MsgBox(e.ToString(), "MultiClip.UI");
                 return false;
             }
         }
@@ -205,7 +205,7 @@ Ctrl+Shift+Q
             }
             catch (Exception e)
             {
-                System.Windows.MessageBox.Show("Cannot save hot keys settings: " + e.Message, "MultiClip");
+                Operations.MsgBox("Cannot save hot keys settings: " + e.Message, "MultiClip");
             }
         }
 
@@ -253,7 +253,7 @@ Ctrl+Shift+Q
             }
             catch (Exception e)
             {
-                System.Windows.MessageBox.Show(e.Message, "MultiClip");
+                Operations.MsgBox(e.Message, "MultiClip");
             }
 
             return result;

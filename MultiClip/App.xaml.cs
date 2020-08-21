@@ -17,19 +17,37 @@ namespace MultiClip.UI
 
         void Application_Startup(object sender, StartupEventArgs e)
         {
-            Log.WriteLine($"=============== Started =================");
-            Log.WriteLine(Assembly.GetExecutingAssembly().Location);
-            //new SettingsView().ShowDialog();return;
-            //IMPORTANT: Do not release the mutex. OS will release the mutex on app exit automatically.
-            mutex = new Mutex(true, "multiclip.history");
-            if (mutex.WaitOne(0))
+            if (Environment.GetCommandLineArgs().Contains("-kill"))
             {
-                StartApp();
+                var runningGui = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location))
+                                        .Where(p => p.Id != Process.GetCurrentProcess().Id);
+
+                foreach (var server in runningGui)
+                    try
+                    {
+                        server.Kill();
+                    }
+                    catch { }
+                ClipboardMonitor.KillAllServers();
+
+                Shutdown();
             }
             else
             {
-                MessageBox.Show("Another instance of the application is already running.", "MultiClip");
-                Shutdown();
+                Log.WriteLine($"=============== Started =================");
+                Log.WriteLine(Assembly.GetExecutingAssembly().Location);
+                //new SettingsView().ShowDialog();return;
+                //IMPORTANT: Do not release the mutex. OS will release the mutex on app exit automatically.
+                mutex = new Mutex(true, "multiclip.history");
+                if (mutex.WaitOne(0))
+                {
+                    StartApp();
+                }
+                else
+                {
+                    Operations.MsgBox("Another instance of the application is already running.", "MultiClip");
+                    Shutdown();
+                }
             }
         }
 
@@ -57,7 +75,7 @@ namespace MultiClip.UI
         void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
 #if DEBUG
-            MessageBox.Show(e.ExceptionObject.ToString(), "MultiClip critical error");
+            Operations.MsgBox(e.ExceptionObject.ToString(), "MultiClip critical error");
 #else
             Debug.Assert(false, e.ToString());
 #endif

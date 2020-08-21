@@ -120,7 +120,7 @@ namespace MultiClip.UI
             stopping = false;
         }
 
-        static void KillAllServers()
+        public static void KillAllServers()
         {
             var runningServers = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(multiClipServerExe));
             if (runningServers.Any())

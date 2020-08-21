@@ -198,6 +198,12 @@ namespace MultiClip.UI
             catch { } //doesn't matter why we failed, just ignore and continue
         }
 
+        public static void MsgBox(string message, string caption)
+        {
+            if (Environment.GetEnvironmentVariable("UNDER_CHOCO").IsEmpty())
+                MessageBox.Show(message, caption);
+        }
+
         private static string CreateShortcut(string destFile, string appPath, string args = null)
         {
             Debug.Assert(destFile.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase));

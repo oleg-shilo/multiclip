@@ -130,7 +130,7 @@ namespace MultiClip.UI
 
         public void About()
         {
-            MessageBox.Show("Multi-item clipboard buffer.\n\nVersion: " + Assembly.GetExecutingAssembly().GetName().Version + "\nCopyright © Oleg Shilo 2015", "Multiclip");
+            Operations.MsgBox("Multi-item clipboard buffer.\n\nVersion: " + Assembly.GetExecutingAssembly().GetName().Version + "\nCopyright © Oleg Shilo 2015", "Multiclip");
         }
 
         public void EditHotKeys()
