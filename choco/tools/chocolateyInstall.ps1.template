@@ -1,0 +1,19 @@
+﻿$packageName = 'multiclip'
+$url = ???
+
+try {
+  [System.Environment]::SetEnvironmentVariable('UNDER_CHOCO', 'yes')
+  Stop-Process -Name "multiclip"
+  Stop-Process -Name "multiclip.server"
+
+  $installDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+
+  $checksum = ???
+  $checksumType = "sha256"
+
+  # Download and unpack a zip file
+  Install-ChocolateyZipPackage "$packageName" "$url" "$installDir" -checksum $checksum -checksumType $checksumType
+
+} catch {
+  throw $_.Exception
+}
