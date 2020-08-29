@@ -138,6 +138,7 @@ namespace Win32
             50378, // (Art::Table ClipFormat)
             49171, // (Ole Private Data) // not sure if not having this one is 100% acceptable
             14,    // (EnhancedMetafile)
+            3,     // CF_METAFILEPICT - upsets Excel
         };
 
         public static Dictionary<uint, byte[]> GetClipboard()
@@ -159,7 +160,7 @@ namespace Win32
                             {
                                 // zos
                                 // skipping nasty formats as well as delaying the making snapshot (ClipboardHistory.cs:78)
-                                // seems to help with unhandled Win32 exceptions
+                                // seems to help with unhanded Win32 exceptions
                                 if (ignoreCipboardFormats.Contains(format))
                                     return;
 

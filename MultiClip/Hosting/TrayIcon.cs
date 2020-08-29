@@ -21,6 +21,7 @@ namespace MultiClip.UI
 
         static public void RefreshIcon()
         {
+            // works but interferes with the mouse cursor and menus
             var icon = ni.Icon;
             ni.Icon = null;
             Application.DoEvents();

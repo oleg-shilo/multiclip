@@ -42,12 +42,14 @@ namespace MultiClip.UI
             timer.Tick += (s, e) =>
             {
                 ClipboardMonitor.Test();
-                TrayIcon.RefreshIcon();
+
+                // refreshing works but I am not convinced it is beneficial enough to be released
+                // it also creates a short flickering effect every minute.
+                // TrayIcon.RefreshIcon();
             };
 
-            //timer.Interval = TimeSpan.FromMinutes(1);
+            timer.Interval = TimeSpan.FromMinutes(1);
 
-            timer.Interval = TimeSpan.FromSeconds(21);
             timer.Start();
 
             var test2 = "The quick brown fox jumps over a lazy dog" + DateTime.Now;

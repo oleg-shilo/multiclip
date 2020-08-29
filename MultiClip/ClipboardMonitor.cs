@@ -41,7 +41,7 @@ namespace MultiClip.UI
             OnSysShutdown(null, null);
         }
 
-        public static int ServerRecoveryDelay = 3000;
+        public static int ServerRecoveryDelay = 13000;
 
         public static void Start(bool clear = false)
         {

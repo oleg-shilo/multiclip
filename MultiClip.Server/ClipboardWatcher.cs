@@ -162,7 +162,7 @@ internal class ClipboardWatcher : Form
 
     private void InitializeComponent()
     {
-        this.healthCheckTimer = new System.Windows.Forms.Timer();
+        // this.healthCheckTimer = new System.Windows.Forms.Timer();
 
         var h = Win32.Desktop.GetForegroundWindow();
 
@@ -175,8 +175,8 @@ internal class ClipboardWatcher : Form
         //Thus need to restore focus in the GotFocus handler
         //this.WindowState = FormWindowState.Minimized;
 
-        this.healthCheckTimer.Interval = 1000 * 30;
-        this.healthCheckTimer.Enabled = true;
+        // this.healthCheckTimer.Interval = 1000 * 30;
+        // this.healthCheckTimer.Enabled = true;
 
         this.Load += (s, e) =>
         {
