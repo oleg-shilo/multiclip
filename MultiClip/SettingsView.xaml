@@ -217,15 +217,15 @@
                     Content="About"
                     Style="{StaticResource LinkButton}" />
             </Grid>
-            <Grid >
+            <Grid>
 
-            <CheckBox
+                <CheckBox
                 x:Name="RestoreHistoryAtStartup"
                 Margin="0,5"
                 Content="Restore history at startup"
                 ToolTip="Restore clipboard history after the system restart." />
 
-            <Button
+                <Button
                 x:Name="ReadingLog"
                 Margin="3,0"
                 Content="Log"
@@ -237,8 +237,9 @@
             <CheckBox
                 x:Name="StartWithWindows"
                 Margin="0,5"
-                Content="Start with Windows"
-                ToolTip="Start MultiClip on windows startup." />
+                ToolTip="Start MultiClip on windows startup.">
+                <Hyperlink Click="StartWithWindows_Click">Start with Windows</Hyperlink>
+            </CheckBox>
         </StackPanel>
 
         <Border

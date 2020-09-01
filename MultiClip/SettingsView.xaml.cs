@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -100,6 +102,11 @@ namespace MultiClip.UI
                 viewModel.PurgeHistory();
                 PurgeHistory.IsEnabled = true;
             });
+        }
+
+        private void StartWithWindows_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("explorer", Environment.GetFolderPath(Environment.SpecialFolder.Startup));
         }
     }
 }
