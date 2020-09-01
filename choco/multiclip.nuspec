@@ -39,7 +39,8 @@ Multiclip alows restoring a cliborad content (with all its formats) from the his
         </dependencies>
     </metadata>
     <files>
-        <file src="tools\chocolateyInstall.ps1" target="tools\chocolateyInstall.ps1" />
+        <file src="tools\chocolateyBeforeModify.ps1" target="tools\chocolateyBeforeModify.ps1" />
+        <file src="tools\chocolateyInstall.ps1" target="tools\chocolateyInstall.ps1" />        
         <file src="tools\chocolateyUninstall.ps1" target="tools\chocolateyUninstall.ps1" />
     </files>
 </package>
