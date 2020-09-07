@@ -1,19 +1,21 @@
 ﻿$packageName = 'multiclip'
 $url = ???
 
-try {
-  [System.Environment]::SetEnvironmentVariable('UNDER_CHOCO', 'yes')
-  Stop-Process -Name "multiclip"
-  Stop-Process -Name "multiclip.server"
+# In order to avoid multiclip app poping up message boxes need to indicate that
+# we are running under choco runtime by setting `UNDER_CHOCO` evironment variable 
+# that is to be consumed by all child processes of choco.
+# Cannot use `Install-ChocolateyEnvironmentVariable` as the variable should not be 
+# persisted but only set for the choco installation process. So using .NET API
 
-  $installDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+[System.Environment]::SetEnvironmentVariable('UNDER_CHOCO', 'yes')
 
-  $checksum = ???
-  $checksumType = "sha256"
+Stop-Process -Name "multiclip"
+Stop-Process -Name "multiclip.server"
 
-  # Download and unpack a zip file
-  Install-ChocolateyZipPackage "$packageName" "$url" "$installDir" -checksum $checksum -checksumType $checksumType
+$installDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-} catch {
-  throw $_.Exception
-}
+$checksum = ???
+$checksumType = "sha256"
+
+# Download and unpack a zip file
+Install-ChocolateyZipPackage "$packageName" "$url" "$installDir" -checksum $checksum -checksumType $checksumType
