@@ -45,7 +45,7 @@ Be aware MS Windows Defender may identify multiclip as an application containing
 
 While false positives is not an unusual thing, it is rather puzzeling. Ihis case the application that has passed multiple antivirus tests during Chocolayey moderation (virus screening and SHA protection) and yet, when deployed on the target PC it is flagged as dangerous.
 
-You can address this problem by adding the Windows Defender exclusion for `C:\ProgramData\chocolatey\lib\Multiclip` folder. 
+You can address this problem by adding the Windows Defender exclusion for `C:\ProgramData\chocolatey\lib\Multiclip` folder (see [here](https://github.com/oleg-shilo/multiclip/raw/master/docs/defender_exclusion.png)). 
 
 ## Usage
 
