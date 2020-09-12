@@ -37,6 +37,16 @@ These some of the strong MultiClip features:
 
 - Run _multiclip.exe_
 
+- You can alsoinstall MultiClip form Chocolatey:
+  ```
+  choco install multiclip
+  ```
+Be aware MS Windows Defender may identify multiclip as an application containing `Trojan:Script/Wacatac.B!ml` virus. This is the case at least for for MultiClip v1.2.0-1.3.0.
+
+While false positives is not an unusual thing, it is rather puzzeling. Ihis case the application that has passed multiple antivirus tests during Chocolayey moderation (virus screening and SHA protection) and yet, when deployed on the target PC it is flagged as dangerous.
+
+You can address this problem by adding the Windows Defender exclusion for `C:\ProgramData\chocolatey\lib\Multiclip` folder. 
+
 ## Usage
 
 - Press `` CTRL+` `` to popup clipboard history selection dialog
