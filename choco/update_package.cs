@@ -9,6 +9,8 @@ using System;
 
 void main()
 {
+    Console.WriteLine("Starting...");
+
     ServicePointManager.Expect100Continue = true;
     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
