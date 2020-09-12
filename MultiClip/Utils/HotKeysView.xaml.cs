@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace MultiClip.UI.Utils
 {
@@ -18,13 +10,29 @@ namespace MultiClip.UI.Utils
     /// </summary>
     public partial class HotKeysView : Window
     {
+        public class Item
+        {
+            public string Name;
+            public Action Action;
+
+            public override string ToString()
+            {
+                return Name;
+            }
+        }
+
         public HotKeysView()
         {
             InitializeComponent();
-            mapping.Text = HotKeysMapping.ToView();
+
+            var map = HotKeysMapping.ToKeyHandlersView();
+            foreach (var key in map.Keys)
+                mappingList.Items.Add(new Item { Name = key, Action = map[key] });
         }
 
-        static internal void Popup()
+        public static string PopupActionName = "<MultiClip.ShowHotKeys>";
+
+        static public void Popup()
         {
             new HotKeysView().ShowDialog();
         }
@@ -32,7 +40,11 @@ namespace MultiClip.UI.Utils
         void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape || e.Key == Key.Return)
+            {
                 Close();
+                if (e.Key == Key.Return)
+                    (mappingList.SelectedItem as Item)?.Action();
+            }
         }
 
         void Window_Deactivated(object sender, EventArgs e)
@@ -48,6 +60,15 @@ namespace MultiClip.UI.Utils
         {
             // to ensure the keyboard input focus
             this.Activate();
+            mappingList.SelectedIndex = 0;
+            (mappingList.ItemContainerGenerator
+                        .ContainerFromItem(mappingList.SelectedItem) as ListBoxItem)?
+                        .Focus();
+        }
+
+        private void mappingList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            (mappingList.SelectedItem as Item)?.Action();
         }
     }
 }

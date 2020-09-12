@@ -393,19 +393,21 @@ internal class ClipboardHistory
         }
         catch (Clipboard.LastSessionErrorDetectedException ex)
         {
-            var newThread = new Thread(() =>
+            if (Environment.GetEnvironmentVariable("MULTICLIP_SHOW_ERRORS") != null)
             {
-                try
+                var newThread = new Thread(() =>
                 {
-                    Thread.Sleep(1000);
-                    //Debug.Assert(false);
-                    Clipboard.SetText($"MultiClip Error: {ex.Message}");
-                }
-                catch { }
-            });
-            newThread.IsBackground = true;
-            newThread.SetApartmentState(ApartmentState.STA);
-            newThread.Start();
+                    try
+                    {
+                        Thread.Sleep(1000);
+                        Clipboard.SetText($"MultiClip Error: {ex.Message}");
+                    }
+                    catch { }
+                });
+                newThread.IsBackground = true;
+                newThread.SetApartmentState(ApartmentState.STA);
+                newThread.Start();
+            }
         }
         catch
         {

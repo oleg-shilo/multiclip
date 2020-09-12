@@ -31,10 +31,10 @@ namespace MultiClip.UI
 
             hotKeys.Start();
 
-            HotKeysMapping.EmbeddedHandlers["<MultiClip.Show>"] = HistoryView.Popup;
-            HotKeysMapping.EmbeddedHandlers["<MultiClip.ToPlainText>"] = ClipboardMonitor.ToPlainText;
-            HotKeysMapping.EmbeddedHandlers["<MultiClip.ShowHotKeys>"] = HotKeysView.Popup;
-            HotKeysMapping.EmbeddedHandlers["<MultiClip.Reset>"] = ClipboardMonitor.Restart;
+            HotKeysMapping.EmbeddedHandlers[HistoryView.PopupActionName] = HistoryView.Popup;
+            HotKeysMapping.EmbeddedHandlers[ClipboardMonitor.ToPlainTextActionName] = ClipboardMonitor.ToPlainText;
+            HotKeysMapping.EmbeddedHandlers[HotKeysView.PopupActionName] = HotKeysView.Popup;
+            HotKeysMapping.EmbeddedHandlers[ClipboardMonitor.RestartActionName] = ClipboardMonitor.Restart;
 
             HotKeysMapping.Bind(hotKeys, TrayIcon.InvokeMenu);
 

@@ -139,6 +139,9 @@ namespace MultiClip.UI
                 }
         }
 
+        public static string ToPlainTextActionName = "<MultiClip.ToPlainText>";
+        public static string RestartActionName = "<MultiClip.Reset>";
+
         public static void ToPlainText()
         {
             Task.Factory.StartNew(() =>

@@ -9,8 +9,8 @@ $url = ???
 
 [System.Environment]::SetEnvironmentVariable('UNDER_CHOCO', 'yes')
 
-Stop-Process -Name "multiclip"
-Stop-Process -Name "multiclip.server"
+Stop-Process -Name "multiclip" -ErrorAction SilentlyContinue
+Stop-Process -Name "multiclip.server" -ErrorAction SilentlyContinue
 
 $installDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 

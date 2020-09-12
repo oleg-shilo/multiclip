@@ -15,6 +15,6 @@
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
     <Grid>
-        <TextBlock x:Name="mapping" Margin="10" />
+        <ListBox x:Name="mappingList" Margin="10" MouseDoubleClick="mappingList_MouseDoubleClick"></ListBox>
     </Grid>
 </Window>

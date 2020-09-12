@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using MultiClip.UI.Utils;
 
 namespace MultiClip.UI
 {
@@ -130,6 +131,47 @@ namespace MultiClip.UI
             }
             else
                 return "Hot keys mapping was not loaded.";
+        }
+
+        public static Dictionary<string, Action> ToKeyHandlersView(string mappingFile = null)
+        {
+            Dictionary<string, Action> result = new Dictionary<string, Action>();
+
+            mappingFile = mappingFile ?? hotKeysMapping;
+
+            if (File.Exists(mappingFile))
+            {
+                // var result = new StringBuilder();
+
+                foreach (HotKeyBinding item in LoadFrom(mappingFile))
+                {
+                    string hotKey = item.HotKey.ToReadableHotKey();
+
+                    var key = string.Format("{0}{2}\t - {1}", hotKey, item.Name, (hotKey.Length < 8 ? "\t" : ""));
+                    if (EmbeddedHandlers.ContainsKey(item.Name)) //e.g. <MultiClip.Show>
+                    {
+                        result[key] = EmbeddedHandlers[item.Name];
+                    }
+                    else
+                    {
+                        string app = item.Application;
+                        string args = item.Args;
+
+                        result[key] = () =>
+                        {
+                            try
+                            {
+                                Process.Start(app, args);
+                            }
+                            catch (Exception e)
+                            {
+                                Operations.MsgBox(e.Message, "MultiClip - " + item.Name);
+                            }
+                        };
+                    }
+                }
+            }
+            return result;
         }
 
         static void EnsureDefaults(string mappingFile = null)

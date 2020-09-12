@@ -46,6 +46,8 @@ namespace MultiClip.UI
 
         private static HistoryView activeView;
 
+        public static string PopupActionName = "<MultiClip.Show>";
+
         public static void Popup()
         {
             if (activeView == null || activeView.IsClosed)
