@@ -12,7 +12,7 @@ void main()
     ServicePointManager.Expect100Continue = true;
     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-    var url = "https://github.com/oleg-shilo/multiclip/releases/download/v1.2.0.3/multiclip.7z";
+    var url = "https://github.com/oleg-shilo/multiclip/releases/download/v1.3.0.0/multiclip.7z";
 
     var installScript = @"tools\chocolateyInstall.ps1";
 
