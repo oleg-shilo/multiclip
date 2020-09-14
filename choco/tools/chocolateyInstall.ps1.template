@@ -14,13 +14,6 @@ Stop-Process -Name "multiclip.server" -ErrorAction SilentlyContinue
 
 $installDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-Write-Output "--------------" 
-Write-Output "Adding Windows Defender exclusion: " 
-Write-Output "    $installDir" 
-Write-Output "" 
-Write-Output " (see https://github.com/oleg-shilo/multiclip/blob/master/README.md#installation)"
-Write-Output "--------------" 
-
 Add-MpPreference -ExclusionPath "$installDir"
 
 $checksum = ???

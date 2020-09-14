@@ -14,16 +14,9 @@ Stop-Process -Name "multiclip.server" -ErrorAction SilentlyContinue
 
 $installDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-Write-Output "--------------" 
-Write-Output "Adding Windows Defender exclusion: " 
-Write-Output "    $installDir" 
-Write-Output "" 
-Write-Output " (see https://github.com/oleg-shilo/multiclip/blob/master/README.md#installation)"
-Write-Output "--------------" 
-
 Add-MpPreference -ExclusionPath "$installDir"
 
-$cheksum = '063FDB94A09ADFA4523096C14BA0692DA73296D2566ED41D94836B734C927B33'
+$cheksum = 'DF46A885770CEA0E5644BE0CDBDBE0BC08A33FB985B1B406408E38CBED209E5D'
 $checksumType = "sha256"
 
 # Download and unpack a zip file
