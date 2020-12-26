@@ -4,4 +4,4 @@ echo *  must be admin  *
 echo *******************
 
 choco pack
-REM choco install cs-script.core -s '%cd%' --force
+REM choco install multiclip -s '%cd%' --force

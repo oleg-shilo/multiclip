@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Multiclip</id>
-        <version>1.3.0.0</version>
+        <version>1.4.0.0</version>
         <title>Multiclip</title>
         <authors>Oleg Shilo</authors>
         <owners>Oleg Shilo</owners>
@@ -16,6 +16,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>MultiClip is a non-obsructive clipboard manager. There are quite a few very good products exist in this category. Though MultiClip is a clipboard manager that puts an extremely strong emphasis on the user experience particularly tailored for the programmers. MultiClip is noting else but an application that allows you to switch the clipboard content to any item from the interactive clipboard history dialog. 
 Multiclip alows restoring a cliborad content (with all its formats) from the history.
+_Your antivirus may report Multiclip a false positive due to the fact that the solution uses low level keyboard API. Thus you may need to to customize your scaning configuration. See this [article](https://github.com/oleg-shilo/multiclip/blob/master/README.md#Important) for more details _
 
 - Support capturing and resotoring for all clipboard formats.
 - Auto-completion IDE-style user experience.
@@ -31,9 +32,8 @@ Multiclip alows restoring a cliborad content (with all its formats) from the his
 </description>
         <summary>Multiclip</summary>
         <releaseNotes>
-# Release v1.3.0.0
-- "Show Keys Mapping" dialog is changed to allow invoking selected item mapped action directly from the dialog
-- Disabled (by default) showing recoverable errors in the history list.
+# Release v1.4.0.0
+- Added option to paste clipboard content after selection from the clipboard history.
         </releaseNotes>
         <copyright>Oleg Shilo</copyright>
         <tags>clipboard C# UI UX User-Experience</tags>

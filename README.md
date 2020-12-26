@@ -41,11 +41,21 @@ These some of the strong MultiClip features:
   ```
   choco install multiclip
   ```
-Be aware MS Windows Defender may identify multiclip as an application containing `Trojan:Script/Wacatac.B!ml` virus. This is the case at least for for MultiClip v1.2.0-1.3.0.
 
-While false positives is not an unusual thing, it is rather puzzeling. Ihis case the application that has passed multiple antivirus tests during Chocolayey moderation (virus screening and SHA protection) and yet, when deployed on the target PC it is flagged as dangerous.
+---
+
+### Important
+
+Be aware MS _**Windows Defender**_ may identify multiclip as an application containing `Trojan:Script/Wacatac.B!ml` (or oter) virus. This is the case at least for for MultiClip v1.2.0-1.3.0.
+
+While false positives are not so uncommon, it is rather puzzeling. This case the application that has passed multiple antivirus tests during Chocolayey moderation (virus screening and SHA protection) and yet, when deployed on the target PC it is flagged as dangerous by _Windows Defender_. 
+
+_Windows Defender_ is in fact so aggressive that it deletes that executable even if you just build it in Visual Studio and start debugging it (with F5).
+The executable not even have any tird-party dependency so the only possible trigger for this can be the use of low-level Win API for intercepting system wide hot-key combinations. 
 
 You can address this problem by adding the Windows Defender exclusion for `C:\ProgramData\chocolatey\lib\Multiclip` folder (see [here](https://github.com/oleg-shilo/multiclip/raw/master/docs/defender_exclusion.png)). 
+
+---
 
 ## Usage
 

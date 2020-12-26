@@ -218,12 +218,13 @@
                     Style="{StaticResource LinkButton}" />
             </Grid>
             <Grid>
-
                 <CheckBox
-                x:Name="RestoreHistoryAtStartup"
+                x:Name="PasteAfterSelection"
                 Margin="0,5"
-                Content="Restore history at startup"
-                ToolTip="Restore clipboard history after the system restart." />
+                Content="Paste content after selection."
+                ToolTip="Paste clipboard content after it is selected from the clipboard history." />
+
+
 
                 <Button
                 x:Name="ReadingLog"
@@ -235,9 +236,15 @@
             </Grid>
 
             <CheckBox
+                x:Name="RestoreHistoryAtStartup"
+                Margin="0,5"
+                Content="Restore history at startup"
+                ToolTip="Restore clipboard history after the system restart." />
+            
+            <CheckBox
                 x:Name="StartWithWindows"
                 Margin="0,5"
-                ToolTip="Start MultiClip on windows startup.">
+                ToolTip="Start MultiClip on windows startup.&#x0a;   Use the checkbox to set the behavior.&#x0a;   Click the link to open StartUp folder.">
                 <Hyperlink Click="StartWithWindows_Click">Start with Windows</Hyperlink>
             </CheckBox>
         </StackPanel>

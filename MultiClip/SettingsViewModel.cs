@@ -31,6 +31,8 @@ namespace MultiClip.UI
         }
 
         public bool RestoreHistoryAtStartup { get; set; }
+        public bool PasteAfterSelection { get; set; }
+
         public bool StartWithWindows { get; set; }
 
         public SettingsViewModel()
@@ -40,6 +42,7 @@ namespace MultiClip.UI
             DarkTheme = true;
             LightTheme = false;
             RestoreHistoryAtStartup = true;
+            PasteAfterSelection = true;
             StartWithWindows = true;
         }
 

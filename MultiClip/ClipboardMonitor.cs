@@ -227,7 +227,17 @@ namespace MultiClip.UI
         {
             try
             {
+                
                 StartServer($"\"-load:{bufferLocation}").WaitForExit();
+
+                if(SettingsViewModel.Load().PasteAfterSelection ||
+                   System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LeftCtrl))
+				    Task.Run(() =>
+                    {
+                        Thread.Sleep(100);
+                        Desktop.FireKeyInput(System.Windows.Forms.Keys.V, System.Windows.Forms.Keys.ControlKey);
+                    });
+
             }
             catch
             {
