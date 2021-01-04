@@ -70,7 +70,6 @@
       <Link>Globals.cs</Link>
     </Compile>
     <Compile Include="ClipboardMonitor.cs" />
-    <Compile Include="desktop.api.cs" />
     <Compile Include="Properties\AssemblyVersion.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -79,6 +78,7 @@
     </Compile>
     <Compile Include="Utils\AutoBinder.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Utils\desktop.api.cs" />
     <Compile Include="Utils\DibHelper.cs" />
     <Compile Include="Utils\HotKeyEditor.xaml.cs">
       <DependentUpon>HotKeyEditor.xaml</DependentUpon>

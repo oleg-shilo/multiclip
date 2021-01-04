@@ -22,7 +22,7 @@ namespace MultiClip.UI
 
     public static class HotKeysMapping
     {
-        static string hotKeysMapping = Path.Combine(Globals.DataDir, @"..\multiclip.hotkeys");
+        static readonly string hotKeysMapping = Path.Combine(Globals.DataDir, @"..\multiclip.hotkeys");
         static internal Dictionary<string, Action> EmbeddedHandlers = new Dictionary<string, Action>();
 
         public static void Bind(HotKeys engine, ToolStripMenuItem rootMenu)
@@ -182,7 +182,7 @@ namespace MultiClip.UI
                 CreateDefaultMappingFile(mappingFile);
         }
 
-        static string ConfigHeader =
+        static readonly string ConfigHeader =
 @";<hotkey>
 ;  [name]
 ;  <application>[|argument0...[|argumentN]]
@@ -314,7 +314,7 @@ Ctrl+Shift+Q
             }
         }
 
-        Dictionary<int, List<Action>> handlers = new Dictionary<int, List<Action>>();
+        readonly Dictionary<int, List<Action>> handlers = new Dictionary<int, List<Action>>();
 
         [DllImport("User32.dll")]
         static extern bool RegisterHotKey([In] IntPtr hWnd, [In] int id, [In] uint fsModifiers, [In] uint vk);

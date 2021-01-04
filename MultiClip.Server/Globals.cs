@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MultiClip
 {
-    internal class Globals
+    class Globals
     {
         static Globals()
         {
@@ -18,7 +18,7 @@ namespace MultiClip
         public const int WM_MULTICLIPTEST = WM_USER + 100;
     }
 
-    internal class Config
+    class Config
     {
         public static int MaxHistoryDepth = 35;
         public static bool RestoreHistoryAtStartup = true;

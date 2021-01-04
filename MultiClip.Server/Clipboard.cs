@@ -220,8 +220,6 @@ namespace Win32
             return result.ToArray();
         }
 
-        //[HandleProcessCorruptedStateExceptions]
-        //[SecurityCritical]
         public static byte[] GetBytes(uint format)
         {
             IntPtr pos = IntPtr.Zero;
@@ -285,36 +283,6 @@ namespace Win32
         [DllImport("shell32.dll", CharSet = CharSet.Auto)]
         private static extern int DragQueryFile(IntPtr hDrop, uint iFile, StringBuilder lpszFile, int cch);
 
-        static public Dictionary<uint, byte[]> GetClipboard_old()
-        {
-            var result = new Dictionary<uint, byte[]>();
-            try
-            {
-                if (OpenClipboard(IntPtr.Zero))
-                {
-                    try
-                    {
-                        foreach (var format in GetFormats())
-                        {
-                            try
-                            {
-                                var bytes = GetBytes(format);
-                                if (bytes != null)
-                                    result[format] = bytes;
-                            }
-                            catch { }
-                        }
-                    }
-                    finally
-                    {
-                        CloseClipboard();
-                    }
-                }
-            }
-            catch { }
-            return result;
-        }
-
         static public void SetText(string text)
         {
             try
@@ -322,16 +290,6 @@ namespace Win32
                 NClipboard.SetText(text);
             }
             catch { }
-        }
-
-        static public string GetText()
-        {
-            try
-            {
-                return NClipboard.GetText();
-            }
-            catch { }
-            return null;
         }
 
         static public void ToPlainText()
@@ -361,29 +319,6 @@ namespace Win32
                 }
             }
             catch { }
-        }
-    }
-
-    [SuppressUnmanagedCodeSecurity, ComVisible(false)]
-    internal class Win32
-    {
-        // Methods
-        [DllImport("User32.dll", CharSet = CharSet.Auto)]
-        public static extern bool ChangeClipboardChain(IntPtr hWndRemove, IntPtr hWndNewNext);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("User32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SetClipboardViewer(IntPtr hWnd);
-
-        // Nested Types
-        public enum Msgs
-        {
-            WM_CHANGECBCHAIN = 0x30d,
-            WM_DRAWCLIPBOARD = 0x308,
-            WM_ENDSESSION = 0x16,
-            WM_QUERYENDSESSION = 0x11
         }
     }
 }

@@ -13,10 +13,10 @@ using MultiClip;
 /// </summary>
 internal class ClipboardWatcher : Form
 {
-    private IntPtr nextClipboardViewer;
+    IntPtr nextClipboardViewer;
     static public Action OnClipboardChanged;
 
-    private static ClipboardWatcher dialog;
+    static ClipboardWatcher dialog;
 
     static public void InUiThread(Action action)
     {
@@ -26,7 +26,7 @@ internal class ClipboardWatcher : Form
             dialog.Invoke(action);
     }
 
-    private static bool enabled;
+    static bool enabled;
 
     static new public bool Enabled
     {
@@ -50,9 +50,9 @@ internal class ClipboardWatcher : Form
 
     public static IntPtr WindowHandle;
 
-    private static bool started = false;
+    static bool started = false;
 
-    private static void Start()
+    static void Start()
     {
         lock (typeof(ClipboardWatcher))
         {
@@ -73,24 +73,11 @@ internal class ClipboardWatcher : Form
                     }
                     catch { }
                 });
-
-                //Thread newThread = new Thread(new ThreadStart(()=>
-                //{
-                //    try
-                //    {
-                //        Debug.Assert(dialog == null);
-                //        dialog = new ClipboardWatcher();
-                //        dialog.ShowDialog();
-                //    }
-                //    catch { }
-                //}));
-                //newThread.SetApartmentState(ApartmentState.STA);
-                //newThread.Start();
             }
         }
     }
 
-    private static void Stop()
+    static void Stop()
     {
         lock (typeof(ClipboardWatcher))
         {
@@ -109,7 +96,25 @@ internal class ClipboardWatcher : Form
 
     public ClipboardWatcher()
     {
+        var h = Win32.Desktop.GetForegroundWindow();
+
         this.InitializeComponent();
+
+        this.Load += (s, e) =>
+        {
+            Left = -8200;
+            Init();
+        };
+
+        this.GotFocus += (s, e) =>
+        {
+            Win32.Desktop.SetForegroundWindow(h); //it is important to return the focus back to the desktop window as this one always steals it at startup
+        };
+
+        this.FormClosed += (s, e) =>
+        {
+            Uninit();
+        };
     }
 
     [DllImport("User32.dll", CharSet = CharSet.Auto)]
@@ -118,7 +123,7 @@ internal class ClipboardWatcher : Form
     static internal int ChangesCount = 0;
     static internal bool IsTestingMode = false;
 
-    private void NotifyChanged()
+    void NotifyChanged()
     {
         try
         {
@@ -144,55 +149,19 @@ internal class ClipboardWatcher : Form
         catch { }
     }
 
-    // Remove from Alt+Tab dialog
-    //protected override CreateParams CreateParams
-    //{
-    //    get
-    //    {
-    //        var @params = base.CreateParams;
-    //        @params.ExStyle |= 0x80;
-    //        return @params;
-    //    }
-    //}
-
-    private System.Windows.Forms.Timer healthCheckTimer;
-
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
-    private void InitializeComponent()
+    void InitializeComponent()
     {
-        // this.healthCheckTimer = new System.Windows.Forms.Timer();
+            this.SuspendLayout();
+            // 
+            // ClipboardWatcher
+            // 
+            this.ClientSize = new System.Drawing.Size(284, 195);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Name = "ClipboardWatcher";
+            this.ShowInTaskbar = false;
+            this.Text = "MultiClip_ClipboardWatcherWindow";
+            this.ResumeLayout(false);
 
-        var h = Win32.Desktop.GetForegroundWindow();
-
-        this.Text = Globals.ClipboardWatcherWindow;
-        this.ShowInTaskbar = false;
-        this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-
-        //Cannot start minimized as it will be visible floating over the taskbar.
-        //Need to start normal but this in turn will steal the current focus.
-        //Thus need to restore focus in the GotFocus handler
-        //this.WindowState = FormWindowState.Minimized;
-
-        // this.healthCheckTimer.Interval = 1000 * 30;
-        // this.healthCheckTimer.Enabled = true;
-
-        this.Load += (s, e) =>
-        {
-            Left = -8200;
-            Init();
-        };
-
-        this.GotFocus += (s, e) =>
-        {
-            Win32.Desktop.SetForegroundWindow(h); //it is important to return the focus back to the desktop window as this one always steals it at startup
-        };
-
-        this.FormClosed += (s, e) =>
-        {
-            Uninit();
-        };
     }
 
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -201,12 +170,12 @@ internal class ClipboardWatcher : Form
     [DllImport("User32.dll")]
     protected static extern int SetClipboardViewer(int hWndNewViewer);
 
-    private void Init()
+    void Init()
     {
         nextClipboardViewer = (IntPtr)SetClipboardViewer((int)Handle);
     }
 
-    private void Uninit()
+    void Uninit()
     {
         ChangeClipboardChain(Handle, nextClipboardViewer);
     }

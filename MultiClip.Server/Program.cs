@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -25,6 +26,9 @@ namespace MultiClip
 
             if (args.Contains("-showdup"))
                 ClipboardHistory.Purge(showOnly: true);
+
+            if (args.Contains("-capture"))
+                new ClipboardHistory().MakeSnapshot();
 
             if (args.Contains("-toplaintext"))
                 Win32.Clipboard.ToPlainText();
@@ -55,7 +59,6 @@ namespace MultiClip
                     closeRequest.Set();
 
                 Parallel.ForEach(runningServers, server =>
-                //foreach (var server in runningServers)
                 {
                     try
                     {
@@ -92,7 +95,18 @@ namespace MultiClip
                 var monitor = new ClipboardHistory();
 
                 var closeRequest = new EventWaitHandle(false, EventResetMode.ManualReset, Globals.CloseRequestName);
-                ClipboardWatcher.OnClipboardChanged = monitor.ScheduleMakeSnapshot;
+                ClipboardWatcher.OnClipboardChanged = () =>
+                    {
+                        var p = new Process();
+
+                        p.StartInfo.FileName = Assembly.GetExecutingAssembly().Location;
+                        p.StartInfo.Arguments = "-capture";
+                        p.StartInfo.UseShellExecute = false;
+                        p.StartInfo.RedirectStandardOutput = true;
+                        p.StartInfo.CreateNoWindow = true;
+                        p.Start();
+                    };
+
                 ClipboardWatcher.Enabled = true;
 
                 Task.Factory.StartNew(() =>

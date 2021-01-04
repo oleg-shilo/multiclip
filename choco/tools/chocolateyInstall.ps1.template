@@ -14,8 +14,6 @@ Stop-Process -Name "multiclip.server" -ErrorAction SilentlyContinue
 
 $installDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-Add-MpPreference -ExclusionPath "$installDir"
-
 $checksum = ???
 $checksumType = "sha256"
 

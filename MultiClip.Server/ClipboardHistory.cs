@@ -4,12 +4,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using MultiClip;
 using MultiClip.Server;
 using Clipboard = Win32.Clipboard;
@@ -38,29 +35,6 @@ internal class ClipboardHistory
         }
     }
 
-    public void ScheduleMakeSnapshot()
-    {
-        Log.WriteLine($"ScheduleMakeSnapshot. async:{Config.AsyncProcessing}");
-
-        if (Config.AsyncProcessing)
-        {
-            if (false == clipboardChanged.WaitOne(0))
-            {
-                clipboardChanged.Set();
-                Task.Factory.StartNew(() =>
-                {
-                    Async.Run(MakeSnapshot)
-                         .WaitFor(20000, // no need to rush, let convenient debugging, but reset if hangs
-                                  onTimeout: () => clipboardChanged.Reset());
-                });
-            }
-        }
-        else
-        {
-            MakeSnapshot();
-        }
-    }
-
     internal static Dictionary<string, byte[]> Cache = new Dictionary<string, byte[]>();
 
     static void ClearCaheHistoryOf(string dir)
@@ -76,15 +50,12 @@ internal class ClipboardHistory
         {
             try
             {
-                // zos
                 //Some applications (e.g. IE) like setting clipboard multiple times to the same content
-                Thread.Sleep(600); //dramatically helps with some 'air' in message queue
+                // Thread.Sleep(300); //dramatically helps with some 'air' in message queue
                 string hashFile = SaveSnapshot();
 
                 if (hashFile != null)
                 {
-                    // lastNotificationTimestamp = Environment.TickCount;
-
                     string hash = Path.GetFileName(hashFile);
 
                     var hashFiles = Directory.GetFiles(Globals.DataDir, "*.hash", SearchOption.AllDirectories);
@@ -232,121 +203,6 @@ internal class ClipboardHistory
             });
     }
 
-    const string TestContent = "{825CF33C-83FC-4C7E-813A-1F6FE77B7DC2}";
-
-    public bool TestClipboardWatcher(bool interactive = true)
-    {
-        MakeSnapshot();
-
-        try
-        {
-            string latestNonTestSnapshot = Directory.GetDirectories(Globals.DataDir).Reverse().FirstOrDefault();
-
-            ClipboardWatcher.IsTestingMode = true;
-            int countBefore = ClipboardWatcher.ChangesCount;
-            Win32.Clipboard.SetText(TestContent);
-            Thread.Sleep(200);
-            int countAfter = ClipboardWatcher.ChangesCount;
-
-            if (countBefore != countAfter)
-            {
-                if (latestNonTestSnapshot.IsNotEmpty())
-                {
-                    LoadSnapshot(latestNonTestSnapshot);
-
-                    if (TestContent == Win32.Clipboard.GetText())
-                    {
-                        Thread.Sleep(300);
-                        LoadSnapshot(latestNonTestSnapshot); //try again one more time
-                    }
-                }
-
-                if (interactive)
-                    Operations.MsgBox("The clipboard monitor is OK.", "MultiClip");
-                return true;
-            }
-            else
-            {
-                if (interactive)
-                    Operations.MsgBox("The clipboard monitor is faulty.", "MultiClip");
-                return false;
-            }
-        }
-        finally
-        {
-            ClipboardWatcher.IsTestingMode = false;
-        }
-    }
-
-    public bool TestClipboardWatcherFull(bool interactive = true)
-    {
-        MakeSnapshot();
-
-        string latestNonTestSnapshot = Directory.GetDirectories(Globals.DataDir).Reverse().FirstOrDefault();
-
-        Win32.Clipboard.SetText(TestContent);
-        Thread.Sleep(200);
-
-        string latestSnapshot = Directory.GetDirectories(Globals.DataDir).Reverse().FirstOrDefault();
-
-        int totalWait = 200;
-        int checkPause = 200;
-        while (latestSnapshot == latestNonTestSnapshot && totalWait < 1600)
-        {
-            Thread.Sleep(checkPause);
-            totalWait += checkPause;
-            latestSnapshot = Directory.GetDirectories(Globals.DataDir).Reverse().FirstOrDefault();
-        }
-
-        if (latestSnapshot != latestNonTestSnapshot)
-        {
-            if (interactive)
-                Operations.MsgBox($"The clipboard monitor is OK.\nChecking time: {totalWait}", "MultiClip");
-
-            latestSnapshot.TryDeleteDir();
-
-            if (latestNonTestSnapshot.IsNotEmpty())
-                LoadSnapshot(latestNonTestSnapshot);
-            return true;
-        }
-        else
-        {
-            if (interactive)
-                Operations.MsgBox("The clipboard monitor is faulty.", "MultiClip");
-            return false;
-        }
-    }
-
-    int countLastCheckCount;
-
-    public void DoHealthCheck()
-    {
-        lock (typeof(ClipboardHistory))
-        {
-            if (countLastCheckCount != ClipboardWatcher.ChangesCount)
-            {
-                countLastCheckCount = ClipboardWatcher.ChangesCount;
-                return; //no need to check as watcher detected some changes since last checking, meaning the watcher works
-            }
-
-            try
-            {
-                if (!TestClipboardWatcher(false))
-                {
-                    ClipboardWatcher.Enabled = false;
-                    ClipboardWatcher.Enabled = true;
-
-                    if (TestClipboardWatcher(false))
-                        Debug.WriteLine("MultiClip has recovered.");
-                    else
-                        Debug.WriteLine("ultiClip could not recover.");
-                }
-                countLastCheckCount = ClipboardWatcher.ChangesCount;
-            }
-            catch { }
-        }
-    }
-
     public string SaveSnapshot()
     {
         try
@@ -413,44 +269,6 @@ internal class ClipboardHistory
         {
         }
         return null;
-    }
-
-    public static string GetSnapshotsInfo(string dir)
-    {
-        var result = new StringBuilder();
-        foreach (var item in Directory.GetDirectories(dir))
-            result.AppendLine(GetSnapshotInfo(item));
-        return result.ToString();
-    }
-
-    public static string GetSnapshotInfo(string dir)
-    {
-        var result = new StringBuilder();
-
-        var totalCrc = new BytesHash();
-        foreach (string file in Directory.GetFiles(dir, "*.cbd").OrderBy(x => x))
-        {
-            var fileCrc = new BytesHash();
-            byte[] data = null;
-            try
-            {
-                if (Cache.ContainsKey(file))
-                    data = Cache[file];
-                else
-                    data = ReadPrivateData(file);
-
-                fileCrc.Add(data);
-                totalCrc.Add(data);
-
-                var val = Encoding.ASCII.GetString(data);
-            }
-            catch { }
-            result.AppendFormat("    {0} - crc:{1}\n", Path.GetFileName(file).Split('.')[1], fileCrc);
-        }
-
-        result.Insert(0, string.Format("--> dir:{0} - crc:{1}\n", Path.GetFileName(dir), totalCrc));
-
-        return result.ToString();
     }
 
     public static void LoadSnapshot(string dir)
@@ -531,14 +349,5 @@ internal class ClipboardHistory
             return ReadPrivateData(file);
         else
             return null;
-    }
-
-    public static void DecryptAll()
-    {
-        foreach (var file in Directory.GetFiles(Globals.DataDir, " *.cbd", SearchOption.AllDirectories))
-        {
-            var bytes = ClipboardHistory.ReadPrivateData(file);
-            File.WriteAllBytes(file, bytes);
-        }
     }
 }

@@ -78,18 +78,6 @@ class BytesHash
     }
 }
 
-public static class RenderingExtensions
-{
-    //public static Size MeasureString(string str)
-    //{
-    //var typeFace = new Typeface(FontFamily, FontStyle, FontWeight, FontStretch);
-    //var text = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeFace, FontSize, Foreground);
-
-    //return new Size(text.Width, text.Height);
-    //}
-    //}
-}
-
 //Thread based task that can be canceled without the task action/body processing the cancellation token
 public class Async
 {
