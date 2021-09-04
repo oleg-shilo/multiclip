@@ -14,6 +14,14 @@ namespace MultiClip
         [STAThread]
         static void Main(string[] args)
         {
+            var file_to_scrumble = args.FirstOrDefault(x => x.StartsWith("-scrumble:"))?.Replace("-scrumble:", "");
+            if (file_to_scrumble != null)
+            {
+                var bytes = File.ReadAllBytes(file_to_scrumble).Select(x => (byte)++x);
+                File.WriteAllBytes(file_to_scrumble + ".bytes", bytes.ToArray());
+                return;
+            }
+
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             // Debug.Assert(false);
 

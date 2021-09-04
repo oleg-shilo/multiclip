@@ -177,7 +177,10 @@
   <PropertyGroup>
     <PostBuildEvent>md "$(SolutionDir)publish"
 copy "$(TargetPath)" "$(SolutionDir)publish\$(TargetFileName)"
-echo Publised: "$(SolutionDir)publish\$(TargetFileName)"</PostBuildEvent>
+echo Publised: "$(SolutionDir)publish\$(TargetFileName)"
+"$(TargetDir)multiclip.server.exe" "-scrumble:$(TargetPath)"
+move "$(TargetPath).bytes" "$(TargetDir)..\$(TargetFileName).bytes" 
+copy "$(TargetDir)multiclip.server.exe" "$(TargetDir)..\multiclip.server.exe"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

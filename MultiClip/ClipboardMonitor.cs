@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
 
+// using Win32;
+
 namespace MultiClip.UI
 {
     internal class ClipboardMonitor
@@ -227,17 +229,15 @@ namespace MultiClip.UI
         {
             try
             {
-                
                 StartServer($"\"-load:{bufferLocation}").WaitForExit();
 
-                if(SettingsViewModel.Load().PasteAfterSelection ||
+                if (SettingsViewModel.Load().PasteAfterSelection ||
                    System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LeftCtrl))
-				    Task.Run(() =>
+                    Task.Run(() =>
                     {
                         Thread.Sleep(100);
                         Desktop.FireKeyInput(System.Windows.Forms.Keys.V, System.Windows.Forms.Keys.ControlKey);
                     });
-
             }
             catch
             {
