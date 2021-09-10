@@ -1,5 +1,5 @@
 $packageName = 'multiclip'
-$url = 'https://github.com/oleg-shilo/multiclip/releases/download/v1.4.1.0/multiclip.7z'
+$url = 'https://github.com/oleg-shilo/multiclip/releases/download/v1.4.1/multiclip.7z'
 
 # In order to avoid multiclip app popping up message boxes need to indicate that
 # we are running under choco runtime by setting `UNDER_CHOCO` environment variable 
