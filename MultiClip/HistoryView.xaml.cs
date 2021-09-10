@@ -87,9 +87,7 @@ namespace MultiClip.UI
         {
             Operations.SetClipboardTo(ViewModel.Selected.Location);
 
-            var wnd = sender.GetParent<Window>();
-            if (wnd != null)
-                wnd.Close();
+            sender.GetParent<Window>()?.Close();
         }
 
         private void History_Loaded(object sender, RoutedEventArgs e)

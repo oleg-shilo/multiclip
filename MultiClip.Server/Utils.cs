@@ -11,7 +11,8 @@ namespace MultiClip.Server
 {
     static class Log
     {
-        static string logFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "server.log");
+        static string DataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MultiClip.History", "Data");
+        static string logFile = Path.Combine(DataDir, @"..\server.log");
 
         public static void WriteLine(string message)
         {
@@ -76,18 +77,6 @@ class BytesHash
     {
         return HashCode.ToString();
     }
-}
-
-public static class RenderingExtensions
-{
-    //public static Size MeasureString(string str)
-    //{
-    //var typeFace = new Typeface(FontFamily, FontStyle, FontWeight, FontStretch);
-    //var text = new FormattedText(str, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeFace, FontSize, Foreground);
-
-    //return new Size(text.Width, text.Height);
-    //}
-    //}
 }
 
 //Thread based task that can be canceled without the task action/body processing the cancellation token

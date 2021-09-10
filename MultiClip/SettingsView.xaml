@@ -10,7 +10,7 @@
     xmlns:utils="clr-namespace:MultiClip.UI.Utils"
     Title="MultiClip Settings"
     Width="330"
-    Height="297"
+    Height="320"
     Closed="Window_Closed"
     Icon="Resources/app.ico"
     PreviewKeyDown="Window_PreviewKeyDown"
@@ -224,8 +224,6 @@
                 Content="Paste content after selection."
                 ToolTip="Paste clipboard content after it is selected from the clipboard history." />
 
-
-
                 <Button
                 x:Name="ReadingLog"
                 Margin="3,0"
@@ -240,7 +238,7 @@
                 Margin="0,5"
                 Content="Restore history at startup"
                 ToolTip="Restore clipboard history after the system restart." />
-            
+
             <CheckBox
                 x:Name="StartWithWindows"
                 Margin="0,5"

@@ -59,7 +59,6 @@ namespace MultiClip
                     closeRequest.Set();
 
                 Parallel.ForEach(runningServers, server =>
-                //foreach (var server in runningServers)
                 {
                     try
                     {
@@ -96,7 +95,6 @@ namespace MultiClip
                 var monitor = new ClipboardHistory();
 
                 var closeRequest = new EventWaitHandle(false, EventResetMode.ManualReset, Globals.CloseRequestName);
-                // ClipboardWatcher.OnClipboardChanged = monitor.ScheduleMakeSnapshot;
                 ClipboardWatcher.OnClipboardChanged = () =>
                     {
                         var p = new Process();

@@ -22,7 +22,6 @@ namespace MultiClip.UI
     {
         public static bool Enabled = true;
 
-        //static string logFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ui.log");
         public static string logFile = Path.Combine(Globals.DataDir, "..", "ui.log");
 
         public static void WriteLine(string message)
