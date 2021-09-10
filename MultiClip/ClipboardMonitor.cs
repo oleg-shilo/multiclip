@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -13,7 +14,8 @@ namespace MultiClip.UI
 {
     internal class ClipboardMonitor
     {
-        private static string multiClipServerExe = Path.Combine(Path.GetDirectoryName(Globals.DataDir), "multiclip.server.exe");
+        // private static string multiClipServerExe = Path.Combine(Path.GetDirectoryName(Globals.DataDir), "multiclip.server.exe");
+        private static string multiClipServerExe = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "multiclip.server.exe");
 
         static ClipboardMonitor()
         {
@@ -24,7 +26,6 @@ namespace MultiClip.UI
             try
             {
                 Stop();
-                File.WriteAllBytes(multiClipServerExe, Properties.Resources.MultiClip_server);
             }
             catch { }
         }
@@ -227,17 +228,15 @@ namespace MultiClip.UI
         {
             try
             {
-                
                 StartServer($"\"-load:{bufferLocation}").WaitForExit();
 
-                if(SettingsViewModel.Load().PasteAfterSelection ||
+                if (SettingsViewModel.Load().PasteAfterSelection ||
                    System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LeftCtrl))
-				    Task.Run(() =>
+                    Task.Run(() =>
                     {
                         Thread.Sleep(100);
                         Desktop.FireKeyInput(System.Windows.Forms.Keys.V, System.Windows.Forms.Keys.ControlKey);
                     });
-
             }
             catch
             {

@@ -80,7 +80,9 @@ namespace Win32
 
         // UI will use this static class for browsing history and `GetExecutingAssembly` may return invalid path (GAC)
         // but because server is always invoked as a process then it is safe to use `GetEntryAssembly`.
-        static string ErrorLog = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "reading.log");
+        public static string DataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MultiClip.History", "Data");
+
+        static string ErrorLog = Path.Combine(DataDir, @"..\reading.log");
 
         static void BackupLog(string logFile)
         {

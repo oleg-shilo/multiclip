@@ -67,9 +67,6 @@ namespace MultiClip.UI
 
             //SettingsView.Popup();
             //return;
-            try { File.Delete("multiclip.server.exe"); } catch { }
-
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             new Bootstrapper().Run();
@@ -82,15 +79,6 @@ namespace MultiClip.UI
 #else
             Debug.Assert(false, e.ToString());
 #endif
-        }
-
-        public bool MyProperty { get; set; }
-
-        Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            if (args.Name.StartsWith("multiclip.server,", StringComparison.InvariantCultureIgnoreCase))
-                return Assembly.Load(MultiClip.UI.Properties.Resources.MultiClip_server);
-            return null;
         }
     }
 }

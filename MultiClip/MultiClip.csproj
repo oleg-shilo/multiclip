@@ -177,6 +177,7 @@
   <PropertyGroup>
     <PostBuildEvent>md "$(SolutionDir)publish"
 copy "$(TargetPath)" "$(SolutionDir)publish\$(TargetFileName)"
+copy "$(TargetDir)multiclip.server.exe" "$(SolutionDir)publish\multiclip.server.exe"
 echo Publised: "$(SolutionDir)publish\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

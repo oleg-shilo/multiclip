@@ -11,7 +11,8 @@ namespace MultiClip.Server
 {
     static class Log
     {
-        static string logFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "server.log");
+        static string DataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MultiClip.History", "Data");
+        static string logFile = Path.Combine(DataDir, @"..\server.log");
 
         public static void WriteLine(string message)
         {
