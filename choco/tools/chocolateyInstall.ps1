@@ -1,5 +1,5 @@
 $packageName = 'multiclip'
-$url = 'https://github.com/oleg-shilo/multiclip/releases/download/v1.4.0.0/multiclip.7z'
+$url = 'https://github.com/oleg-shilo/multiclip/releases/download/v1.4.1.0/multiclip.7z'
 
 # In order to avoid multiclip app popping up message boxes need to indicate that
 # we are running under choco runtime by setting `UNDER_CHOCO` environment variable 
@@ -14,7 +14,7 @@ Stop-Process -Name "multiclip.server" -ErrorAction SilentlyContinue
 
 $installDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-$cheksum = '6DC9F54F4DA0EB55EEA6C406A4691B01DA9EDBBE95CA8DC733F709825AC63112'
+$cheksum = 'F23357D2F3A7CB875B321427D4265284309CF8BA8A685B52B78B9EF6DC692C1B'
 $checksumType = "sha256"
 
 # Download and unpack a zip file

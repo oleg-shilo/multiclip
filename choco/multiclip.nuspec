@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Multiclip</id>
-        <version>1.4.0.0</version>
+        <version>1.4.1.0</version>
         <title>Multiclip</title>
         <authors>Oleg Shilo</authors>
         <owners>Oleg Shilo</owners>
@@ -32,9 +32,8 @@ _Your antivirus may report Multiclip a false positive due to the fact that the s
 </description>
         <summary>Multiclip</summary>
         <releaseNotes>
-# Release v1.4.0.0
-- Added option to paste clipboard content after selection from the clipboard history.
-        </releaseNotes>
+# Release v1.4.1.0
+- UI and server modules are separated to avoid false-positive antivirus detection, which bluntly interprets binary file in the resource PE section as a threat.      </releaseNotes>
         <copyright>Oleg Shilo</copyright>
         <tags>clipboard C# UI UX User-Experience</tags>
         <dependencies>
