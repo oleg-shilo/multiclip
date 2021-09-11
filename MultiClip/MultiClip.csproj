@@ -38,7 +38,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\app.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\tray_icon.black.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -71,11 +71,6 @@
     </Compile>
     <Compile Include="ClipboardMonitor.cs" />
     <Compile Include="Properties\AssemblyVersion.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Utils\AutoBinder.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Utils\desktop.api.cs" />
@@ -140,11 +135,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -156,7 +146,7 @@
     <Resource Include="Resources\app.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\tray_icon.ico" />
+    <Resource Include="Resources\tray_icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\light_theme_preview.png" />
@@ -165,7 +155,7 @@
     <Resource Include="Resources\dark_theme_preview.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\tray_icon.black.ico" />
+    <Resource Include="Resources\tray_icon.black.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiClip.Server\MultiClip.Server.csproj">

@@ -235,7 +235,7 @@ namespace MultiClip.UI
                     Task.Run(() =>
                     {
                         Thread.Sleep(100);
-                        Desktop.FireKeyInput(System.Windows.Forms.Keys.V, System.Windows.Forms.Keys.ControlKey);
+                        //Desktop.FireKeyInput(System.Windows.Forms.Keys.V, System.Windows.Forms.Keys.ControlKey);
                     });
             }
             catch

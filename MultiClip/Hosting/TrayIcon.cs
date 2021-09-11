@@ -1,6 +1,12 @@
 using System;
+using System.Collections;
+using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
 using System.Reflection;
+using System.Resources;
+using System.Threading;
 using System.Windows.Forms;
 using MultiClip.UI.Properties;
 using ContextMenuStrip = System.Windows.Forms.ContextMenuStrip;
@@ -8,6 +14,29 @@ using NotifyIcon = System.Windows.Forms.NotifyIcon;
 
 namespace MultiClip.UI
 {
+    // Using RESX file immediately adds 17 false-positives ton VirusTotal (used by choco).
+    // Even if RESX file is EMPTY!!!! Shocking.
+    // Meaning antiviruses treat any custom resource sections as a threat. Madness.
+    // using resources embedded as part of XAML compilation seems fine.
+    // So piggybacking on XAML resources.
+    public static class AppResources
+    {
+        static ResourceManager resourceMan => new ResourceManager("multiclip.g", Assembly.GetExecutingAssembly());
+
+        static public Icon GetIcon(string name)
+        {
+            // if we need to explore the names in the resource section
+            // foreach (DictionaryEntry item in resourceMan.GetResourceSet(CultureInfo.CurrentUICulture, true, true))
+            //     Trace.WriteLine(item.Key);
+
+            using (var stream = (MemoryStream)resourceMan.GetObject(name, CultureInfo.CurrentUICulture))
+                return new Icon(stream);
+        }
+
+        public static Icon tray_icon_black => GetIcon("resources/tray_icon.black.ico");
+        public static Icon tray_icon => GetIcon("resources/tray_icon.ico");
+    }
+
     class TrayIcon
     {
         static public EventHandler Rehook;
@@ -67,7 +96,7 @@ namespace MultiClip.UI
 
             ni.ContextMenuStrip.Items[0].Font = new Font(ni.ContextMenuStrip.Items[0].Font, FontStyle.Bold);
 
-            SetIcon(Resources.tray_icon);
+            SetIcon(AppResources.tray_icon);
         }
     }
 }

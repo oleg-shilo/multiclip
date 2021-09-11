@@ -392,6 +392,7 @@ namespace System.Windows
         }
 
         #region WIN32
+
         internal class Win32
         {
             internal const int KEYEVENTF_KEYUP = 0x02;
@@ -463,7 +464,7 @@ namespace System.Windows
             };
 
             //SendInput work better than keybd_event when there is a neeed to hande modifiers (e.g. Alt, Ctrl)
-            [DllImport("user32.dll")]
+            // [DllImport("user32.dll")]
             public static extern uint SendInput(uint nInputs, ref INPUT pInputs, int cbSize);
 
             public static void SendInput(Keys key, bool keyDown)
@@ -486,10 +487,10 @@ namespace System.Windows
                 SendInput(1, ref structInput, Marshal.SizeOf(structInput));
             }
 
-            [DllImport("kernel32.dll")]
+            // [DllImport("kernel32.dll")]
             public static extern uint GetCurrentThreadId();
 
-            [DllImport("user32.dll")]
+            // [DllImport("user32.dll")]
             internal static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
             [DllImport("user32.dll")]
@@ -561,6 +562,7 @@ namespace System.Windows
             [DllImport("user32.dll")]
             public static extern bool EnumDesktopWindows(IntPtr hDesktop, EnumWindowProc lpfn, IntPtr lParam);
         }
-        #endregion
+
+        #endregion WIN32
     }
 }

@@ -85,7 +85,7 @@ namespace MultiClip.UI
 
             LightTheme = !DarkTheme;
 
-            TrayIcon.SetIcon(DarkTheme ? Resources.tray_icon : Resources.tray_icon_black);
+            TrayIcon.SetIcon(DarkTheme ? AppResources.tray_icon : AppResources.tray_icon_black);
             MultiClip.Config.MaxHistoryDepth = MaxHistoryItems;
             Operations.ConfigAppStartup(StartWithWindows);
         }
