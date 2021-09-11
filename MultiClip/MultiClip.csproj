@@ -73,7 +73,6 @@
     <Compile Include="Properties\AssemblyVersion.cs" />
     <Compile Include="Utils\AutoBinder.cs" />
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="Utils\desktop.api.cs" />
     <Compile Include="Utils\DibHelper.cs" />
     <Compile Include="Utils\HotKeyEditor.xaml.cs">
       <DependentUpon>HotKeyEditor.xaml</DependentUpon>

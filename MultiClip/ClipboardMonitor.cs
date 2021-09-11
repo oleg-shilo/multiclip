@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using Microsoft.Win32;
 
 namespace MultiClip.UI
@@ -235,7 +236,8 @@ namespace MultiClip.UI
                     Task.Run(() =>
                     {
                         Thread.Sleep(100);
-                        //Desktop.FireKeyInput(System.Windows.Forms.Keys.V, System.Windows.Forms.Keys.ControlKey);
+
+                        Desktop.FireKeyInput(System.Windows.Forms.Keys.V, System.Windows.Forms.Keys.ControlKey);
                     });
             }
             catch
@@ -258,5 +260,29 @@ namespace MultiClip.UI
             Log.WriteLine($"System shutdown detected. Stopping the server.");
             Stop(shutdown: true);
         }
+    }
+}
+
+class Desktop
+{
+    [DllImport("user32.dll")]
+    internal static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+
+    internal const int KEYEVENTF_KEYUP = 0x02;
+    internal const int KEYEVENTF_KEYDOWN = 0x00;
+
+    public static void FireKeyInput(Keys key, params Keys[] modifiers)
+    {
+        foreach (Keys k in modifiers)
+            keybd_event((byte)k, 0x45, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+
+        keybd_event((byte)key, 0x45, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+
+        Thread.Sleep(10);
+
+        keybd_event((byte)key, 0x45, KEYEVENTF_KEYUP, UIntPtr.Zero);
+
+        foreach (Keys k in modifiers)
+            keybd_event((byte)k, 0x45, KEYEVENTF_KEYUP, UIntPtr.Zero);
     }
 }
