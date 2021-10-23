@@ -2,6 +2,8 @@
 
 ## Overview
 
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://oleg-shilo.github.io/cs-script/Donation.html)
+
 MultiClip is not a unique clipboard manager. There are quite a few very good products exist in this category. Though MultiClip is a clipboard manager that puts an extremely strong emphasis on the user experience particularly tailored for the programmers.
 
 MultiClip is noting else but an application that allows you to switch the clipboard content to any item from the interactive clipboard history dialog.  
