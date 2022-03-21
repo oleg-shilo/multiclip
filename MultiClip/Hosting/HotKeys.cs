@@ -67,7 +67,20 @@ namespace MultiClip.UI
                                            {
                                                try
                                                {
-                                                   Process.Start(app, args);
+                                                   if (!item.CreateConsole)
+                                                   {
+                                                       var info = new ProcessStartInfo
+                                                       {
+                                                           FileName = app,
+                                                           Arguments = args,
+                                                           UseShellExecute = false,
+                                                           RedirectStandardOutput = true,
+                                                           CreateNoWindow = true
+                                                       };
+                                                       Process.Start(info);
+                                                   }
+                                                   else
+                                                       Process.Start(app, args);
                                                }
                                                catch (Exception e)
                                                {
@@ -183,9 +196,10 @@ namespace MultiClip.UI
         }
 
         static readonly string ConfigHeader =
-@";<hotkey>
+        @";<hotkey>
 ;  [name]
-;  <application>[|argument0...[|argumentN]]
+;  [console:]<application>[|argument0...[|argumentN]]
+;  console: - is a 'console' attribute to trigger creation of the console window
 ;  Example: notepad.exe|" + hotKeysMapping + @"
 ;---------------------------------------";
 
@@ -193,7 +207,7 @@ namespace MultiClip.UI
         {
             Directory.CreateDirectory(Path.GetDirectoryName(mappingFile));
             File.WriteAllText(mappingFile, ConfigHeader +
-@"
+        @"
 Ctrl+Oem3
   <MultiClip.Show>
 Ctrl+Shift+T
@@ -211,6 +225,7 @@ Ctrl+Shift+Q
             public string HotKey { get; set; }
             public string Application { get; set; }
             public string Args { get; set; }
+            public bool CreateConsole { get; set; }
 
             public override string ToString()
             {
@@ -284,12 +299,16 @@ Ctrl+Shift+Q
 
                     string[] command = (data.Count > 1 ? data[1].Split(new[] { '|' }, 2) : new string[0]);
 
+                    var app = (command.FirstOrDefault() ?? "").Trim('"');
+                    var args = command.Skip(1).FirstOrDefault() ?? "";
+
                     result.Add(new HotKeyBinding
                     {
                         HotKey = key,
                         Name = data[0],
-                        Application = (command.FirstOrDefault() ?? "").Trim('"'),
-                        Args = command.Skip(1).FirstOrDefault() ?? ""
+                        Application = app.StartsWith("console:") ? app.Substring("console:".Length) : app,
+                        Args = args,
+                        CreateConsole = app.StartsWith("console: ")
                     });
                 }
             }
