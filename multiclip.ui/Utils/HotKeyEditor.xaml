@@ -1,0 +1,243 @@
+﻿<UserControl
+    x:Class="MultiClip.UI.Utils.HotKeyEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:MultiClip.UI.Utils"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="211"
+    d:DesignWidth="225"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/MultiClip.ui;component/Rosources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Storyboard x:Key="OnLoaded">
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ErrorPanel" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
+                    <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+                </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
+
+            <Storyboard x:Key="ShowError">
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ErrorPanel" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1" />
+                </DoubleAnimationUsingKeyFrames>
+                <DoubleAnimationUsingKeyFrames
+                    BeginTime="0:0:2"
+                    Storyboard.TargetName="ErrorPanel"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0" />
+                </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource OnLoaded}" />
+        </EventTrigger>
+    </UserControl.Triggers>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="26" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="23" />
+            <RowDefinition Height="23" />
+            <RowDefinition Height="23" />
+            <RowDefinition Height="23" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Text="Hot key:" />
+        <TextBox
+            x:Name="HotKeyValue"
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="5,0,0,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Center"
+            PreviewKeyDown="KeysView_PreviewKeyDown"
+            TextChanged="KeysView_TextChanged"
+            ToolTip="Place cursor and press HotKey combination" />
+
+        <!--  ********  -->
+
+        <TextBlock
+            Grid.Row="1"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Text="Title:" />
+        <TextBox
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="5,0,0,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Center"
+            IsEnabled="{Binding NonBuiltInCommand}"
+            Text="{Binding SelectedHotKey.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            TextChanged="TextBox_TextChanged"
+            ToolTip="Enter display name of the Hot key binding." />
+
+        <!--  ********  -->
+        <TextBlock
+            Grid.Row="2"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Text="Command:" />
+        <TextBox
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="5,0,0,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Center"
+            IsEnabled="{Binding NonBuiltInCommand}"
+            Text="{Binding SelectedHotKey.Application, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            ToolTip="Enter application path." />
+
+        <!--  ********  -->
+        <TextBlock
+            Grid.Row="3"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Text="Arguments:" />
+        <TextBox
+            Grid.Row="3"
+            Grid.Column="1"
+            Margin="5,0,0,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Center"
+            IsEnabled="{Binding NonBuiltInCommand}"
+            Text="{Binding SelectedHotKey.Args, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            ToolTip="Enter optional application arguments." />
+
+        <ListBox
+            x:Name="HotKeys"
+            Grid.Row="4"
+            Grid.ColumnSpan="2"
+            Margin="0,5,0,0"
+            ScrollViewer.CanContentScroll="False" />
+        <StackPanel
+            Grid.Row="4"
+            Grid.Column="2"
+            Margin="0,5,0,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top">
+            <Button
+                x:Name="Add"
+                Width="20"
+                Height="20"
+                Style="{StaticResource PathButton}"
+                ToolTip="Add new HotKey">
+                <Border BorderBrush="#FF000000" BorderThickness="1">
+                    <Path
+                        Margin="3"
+                        Data="M116.985618665814,0L181.145370557904,0 181.145370557904,121.251022338867 298.130981519818,121.251022338867 298.130981519818,187.749847412109 181.145370557904,187.749847412109 181.145370557904,309 116.985618665814,309 116.985618665814,187.749847412109 0,187.749847412109 0,121.251022338867 116.985618665814,121.251022338867z"
+                        Fill="#FF000000"
+                        Stretch="Uniform" />
+                </Border>
+            </Button>
+
+            <Button
+                x:Name="Remove"
+                Width="20"
+                Height="20"
+                Margin="0,5"
+                IsEnabled="{Binding NonBuiltInCommand}"
+                Style="{StaticResource PathButton}"
+                ToolTip="Remove selected HotKey">
+                <Border BorderBrush="#FF000000" BorderThickness="1">
+                    <Path
+                        Margin="3"
+                        Data="M0,0L53.333,0 53.333,8.888 0,8.888z"
+                        Fill="#FF000000"
+                        Stretch="Uniform" />
+                </Border>
+            </Button>
+
+            <Button
+                x:Name="Test"
+                Width="20"
+                Height="20"
+                Margin="0,5"
+                Click="Test_Click"
+                Style="{StaticResource PathButton}"
+                ToolTip="Development testing"
+                Visibility="Collapsed">
+                <Border BorderBrush="#FF000000" BorderThickness="1">
+                    <Path
+                        Margin="3"
+                        Data="M293.548,547.63L293.566,547.63 292.732,548.919z M314.325,0L769.157,0C769.157,4E-06 769.157,44.5912 758.109,66.7878 735.95,84.5798 685.828,71.2219 680.21,102.384L680.21,126.48 680.21,378.393 1065.28,971.304C1065.28,971.304,1166.6,1112,897.797,1112L186.077,1112C-82.6421,1112,18.7572,971.304,18.7572,971.304L49.5898,923.963 231.945,923.963 231.945,892.119 70.0764,892.119 122.986,810.731 304.577,810.731 304.577,778.946 143.596,778.946 201.421,689.617 380.967,689.617 380.967,657.854 222.156,657.854 292.732,548.919 273.413,579.394 456.49,579.394 456.49,547.63 293.566,547.63 403.21,378.393 403.21,102.384C397.86,71.2219 347.718,84.5798 325.476,66.7878 314.325,44.5912 314.325,4E-06 314.325,0z"
+                        Fill="#FF000000"
+                        Stretch="Uniform" />
+                </Border>
+            </Button>
+
+            <Button
+                Width="20"
+                Height="20"
+                Margin="0,5"
+                Click="ShowError_Click"
+                Style="{StaticResource PathButton}"
+                ToolTip="Show last error message"
+                Visibility="{Binding IsErrorSet, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Path
+                    Height="20"
+                    Margin="3"
+                    Data="M159.015,278.352L159.015,321.171 204.991,321.171 204.991,278.352z M159.015,117.752L159.015,246.219 204.991,246.219 204.991,117.752z M181.999,0C186.751,4E-06,191.128,2.84238,193.448,7.4577L362.318,342.176C364.596,346.714 364.561,352.264 362.207,356.764 359.852,361.244 355.535,364 350.869,364L13.1373,364C8.47071,364 4.14567,361.244 1.791,356.764 -0.563664,352.264 -0.598031,346.714 1.69675,342.176L170.558,7.4577C172.887,2.84238,177.264,4E-06,181.999,0z"
+                    Fill="#FF000000"
+                    Stretch="Uniform" />
+            </Button>
+        </StackPanel>
+
+        <Button
+            x:Name="EditFile"
+            Grid.Row="2"
+            Grid.RowSpan="2"
+            Grid.Column="3"
+            Width="20"
+            Height="20"
+            Margin="0,5"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Click="EditFile_Click"
+            Style="{StaticResource PathButton}"
+            ToolTip="Edit the hot keys binding file directly.">
+            <Path
+                Margin="0"
+                Data="M24.713566,54.414L27.674033,56.798189 30.628,59.181179 27.084799,60.551189 23.552,61.920998 24.127633,58.169399z M39.781575,32.973001L47.908998,39.514576 34.488625,56.185001 26.360999,49.642031z M47.339874,26.792416C48.508808,26.777681 49.689411,27.153134 50.670298,27.94158 52.912325,29.745042 53.269096,33.034154 51.461937,35.27513L49.781168,37.365002 41.657999,30.827079 43.338268,28.735807C44.353333,27.475314,45.83696,26.811362,47.339874,26.792416z M17.229177,0L37.181767,0C41.219584,0,44.476799,3.212183,44.597898,7.2122116L44.6147,7.2122116 44.6147,7.3919029 44.619999,8.1211472 44.6147,18.962336 40.879683,18.962336 40.879683,7.2305222C40.770283,5.2734776,39.168175,3.7148666,37.181767,3.7148666L18.590583,3.7148666 18.590583,14.475304C18.590583,16.73702,16.743475,18.589933,14.473365,18.589933L3.719986,18.589933 3.719986,48.342748C3.719986,50.389662,5.3840542,52.058973,7.4368038,52.058973L21.675897,52.058973 21.099694,55.779001 7.4368038,55.779001C3.3293648,55.779001,0,52.441776,0,48.342748L0,17.290424 0,17.287824C0.0045166016,17.222823 0.01953125,17.160323 0.03125,17.095122 0.063720703,16.955822 0.079345703,16.90892 0.10156441,16.86462 0.16076851,16.709721 0.19006348,16.64332 0.21997261,16.584719 0.29101753,16.454418 0.34375191,16.371218 0.39904976,16.294317 0.50256538,16.149817 0.55469131,16.089916 0.60412788,16.024815 0.74805069,15.859514 0.82934952,15.770912 0.91992569,15.675913L15.67777,0.91919708C15.76827,0.82812881 15.856771,0.74866104 15.945372,0.67578506 16.086572,0.55334854 16.141872,0.50647354 16.203173,0.46484756 16.361973,0.34888077 16.441474,0.30469131 16.503974,0.26293945 16.548174,0.23828125 16.592474,0.21875 16.641874,0.19396973 16.776075,0.13012695 16.822975,0.1105957 16.869876,0.094970703 17.006577,0.046875 17.117276,0.022094727 17.225277,0.01171875z"
+                Fill="#FF000000"
+                Stretch="Uniform" />
+        </Button>
+
+        <Border
+            x:Name="ErrorPanel"
+            Grid.RowSpan="99"
+            Grid.ColumnSpan="99"
+            Margin="5,0,0,5"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Bottom"
+            Background="#FFFFE800"
+            BorderBrush="Black"
+            BorderThickness="1"
+            CornerRadius="5"
+            RenderTransformOrigin="0,0">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform />
+                </TransformGroup>
+            </Border.RenderTransform>
+            <TextBlock
+                x:Name="LastError"
+                Margin="5"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch" />
+        </Border>
+    </Grid>
+</UserControl>

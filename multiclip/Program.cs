@@ -11,40 +11,44 @@ namespace multiclip.schim
 {
     internal class Program
     {
-        static void Scrumble(string inFile, string outFile)
+        static byte[] Scrumble(bool toScramble, string inFile)
         {
             var bytes = File.ReadAllBytes(inFile);
             for (int i = 0; i < bytes.Length; i++)
                 if ((i % 2) == 0)
-                    bytes[i] = (byte)(bytes[i] + 1);
-            File.WriteAllBytes(outFile, bytes);
+                    bytes[i] = (byte)(toScramble ? bytes[i] - 1 : bytes[i] + 1);
+            return bytes;
         }
 
-        static void Unscrumble(string inFile, string outFile)
-        {
-            var bytes = File.ReadAllBytes(inFile);
-            for (int i = 0; i < bytes.Length; i++)
-                if ((i % 2) == 0)
-                    bytes[i] = (byte)(bytes[i] - 1);
-            File.WriteAllBytes(outFile, bytes);
-        }
+        static void Scrumble(bool toScramble, string inFile, string outFile)
+            => File.WriteAllBytes(outFile, Scrumble(toScramble, inFile));
+
+        static Assembly asm;
 
         [STAThread]
         static void Main(string[] args)
         {
-            var file = @"D:\dev\Galos\multiclip.git\MultiClip\bin\Debug\multiclip.exe";
-            var assemblyFile1 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "multiclip.exe");
-
-            var assemblyFile = @"D:\dev\Galos\multiclip.git\MultiClip\bin\Debug\multiclip.exe";
-
-            AppDomain.CurrentDomain.ExecuteAssembly(assemblyFile);
-            try
+            if (args.Any())
             {
-                // Scrumble();
+                bool toScramble = (args.First() == "-s");
+                string inFile = args[1];
+                string outFile = args[2];
+
+                Scrumble(toScramble, inFile, outFile);
             }
-            catch { }
+            else
             {
+                AppDomain.CurrentDomain.ResourceResolve += CurrentDomain_ResourceResolve;
+                var scambledAsm = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "multiclip.ui");
+                asm = Assembly.Load(Scrumble(toScramble: false, scambledAsm));
+                var app = asm.GetType("MultiClip.UI.App").GetMethod("Main");
+                app.Invoke(null, new object[0]);
             }
+        }
+
+        private static Assembly CurrentDomain_ResourceResolve(object sender, ResolveEventArgs args)
+        {
+            return asm;
         }
     }
 }
