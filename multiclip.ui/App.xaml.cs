@@ -69,6 +69,8 @@ namespace MultiClip.UI
             //return;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
+            ClipboardMonitor.Restart();
+
             new Bootstrapper().Run();
         }
 

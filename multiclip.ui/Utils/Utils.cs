@@ -186,7 +186,7 @@ namespace MultiClip.UI
 
                 if (start)
                 {
-                    CreateShortcut(shortcutFile, Assembly.GetExecutingAssembly().Location);
+                    CreateShortcut(shortcutFile, Assembly.GetEntryAssembly().Location);
                 }
                 else
                 {

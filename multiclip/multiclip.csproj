@@ -58,7 +58,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(TargetPath)" -s "$(SolutionDir)multiclip.ui\$(OutDir)multiclip.ui.exe" "$(TargetDir)multiclip.ui"
-copy "$(SolutionDir)multiclip.server\$(OutDir)multiclip.server.exe" "$(TargetDir)multiclip.server.exe"</PostBuildEvent>
+    <PostBuildEvent>md "$(SolutionDir)publish"
+
+"$(TargetPath)" -s "$(SolutionDir)multiclip.ui\$(OutDir)multiclip.ui.exe" "$(TargetDir)multiclip.ui"
+copy "$(SolutionDir)multiclip.server\$(OutDir)multiclip.server.exe" "$(TargetDir)multiclip.server.exe"
+
+copy "$(TargetDir)multiclip.server.exe" "$(SolutionDir)publish\multiclip.server.exe"
+copy "$(TargetPath)" "$(SolutionDir)publish\multiclip.exe"
+copy "$(TargetDir)multiclip.ui" "$(SolutionDir)publish\multiclip.ui"
+echo Publised: "$(SolutionDir)publish\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
