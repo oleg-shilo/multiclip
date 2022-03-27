@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Multiclip</id>
-        <version>1.4.1.1</version>
+        <version>1.4.2.0</version>
         <title>Multiclip</title>
         <authors>Oleg Shilo</authors>
         <owners>Oleg Shilo</owners>
@@ -15,15 +15,15 @@
         </iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>MultiClip is a non-obsructive clipboard manager. There are quite a few very good products exist in this category. Though MultiClip is a clipboard manager that puts an extremely strong emphasis on the user experience particularly tailored for the programmers. MultiClip is noting else but an application that allows you to switch the clipboard content to any item from the interactive clipboard history dialog. 
-Multiclip alows restoring a cliborad content (with all its formats) from the history.
-_Your antivirus may report Multiclip a false positive due to the fact that the solution uses low level keyboard API. Thus you may need to to customize your scaning configuration. See this [article](https://github.com/oleg-shilo/multiclip/tree/v1.4.0.0#important) for more details _
+Multiclip allows restoring a clipboard content (with all its formats) from the history.
+_Your antivirus may report Multiclip a false positive due to the fact that the solution uses low level keyboard API. Thus you may need to to customize your scanning configuration. See this [article](https://github.com/oleg-shilo/multiclip/tree/v1.4.0.0#important) for more details _
 
-- Support capturing and resotoring for all clipboard formats.
+- Support capturing and restoring of all clipboard formats.
 - Auto-completion IDE-style user experience.
-- System-wide hot-key triggring.
+- System-wide hot-key triggering.
 - Non-obstructive immediate preview.
 - Full history encryption.
-- General purpose system-wide hotkey mapping for to runing any executable.
+- General purpose system-wide hotkey mapping for to running any executable.
 - Fully configurable
   - Restoring the clipboard history after system restart
   - Start with Windows
@@ -32,9 +32,8 @@ _Your antivirus may report Multiclip a false positive due to the fact that the s
 </description>
         <summary>Multiclip</summary>
         <releaseNotes>
-# Release v1.4.1.1
-- UI and server modules are separated to avoid false-positive antivirus detection, which bluntly interprets binary file in the resource PE section as a threat.
-- All TotalVirus false-positives squashed to just 3
+# Release v1.4.2.0
+- Split into runner, UI and server. To address false virustotal positives
 
       </releaseNotes>
         <copyright>Oleg Shilo</copyright>
