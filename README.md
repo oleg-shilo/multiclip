@@ -1,3 +1,4 @@
+[![stand with Ukraine](https://img.shields.io/badge/stand_with-ukraine-ffd700.svg?labelColor=0057b7)](https://stand-with-ukraine.pp.ua)
 # MultiClip
 
 ## Overview
