@@ -151,17 +151,16 @@ internal class ClipboardWatcher : Form
 
     void InitializeComponent()
     {
-            this.SuspendLayout();
-            // 
-            // ClipboardWatcher
-            // 
-            this.ClientSize = new System.Drawing.Size(284, 195);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "ClipboardWatcher";
-            this.ShowInTaskbar = false;
-            this.Text = "MultiClip_ClipboardWatcherWindow";
-            this.ResumeLayout(false);
-
+        this.SuspendLayout();
+        //
+        // ClipboardWatcher
+        //
+        this.ClientSize = new System.Drawing.Size(284, 195);
+        this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+        this.Name = "ClipboardWatcher";
+        this.ShowInTaskbar = false;
+        this.Text = "MultiClip_ClipboardWatcherWindow";
+        this.ResumeLayout(false);
     }
 
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -192,9 +191,16 @@ internal class ClipboardWatcher : Form
             //case WM_IDLE:
             //    if (m.WParam == nextClipboardViewer)
             case Globals.WM_MULTICLIPTEST:
-                m.Result = (IntPtr)Environment.TickCount;
-                break;
+                {
+                    // Debug.Assert(false);
 
+                    if (ClipboardHistory.lastSnapshopHash != 0 && ClipboardHistory.lastSnapshopHash != Win32.Clipboard.GetClipboard().GetContentHash())
+                        m.Result = IntPtr.Zero; // stopped receiving clipboard notifications
+                    else
+                        m.Result = (IntPtr)Environment.TickCount;
+
+                    break;
+                }
             case WM_ENDSESSION:
                 Application.Exit();
                 break;

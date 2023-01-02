@@ -203,6 +203,8 @@ internal class ClipboardHistory
             });
     }
 
+    static internal ulong lastSnapshopHash;
+
     public string SaveSnapshot()
     {
         try
@@ -213,6 +215,8 @@ internal class ClipboardHistory
 
             if (clipboard?.Any() == true)
             {
+                lastSnapshopHash = clipboard.GetContentHash();
+
                 string snapshotDir = Path.Combine(Globals.DataDir, NextItemId());
 
                 Directory.CreateDirectory(snapshotDir);

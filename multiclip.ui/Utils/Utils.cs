@@ -205,27 +205,22 @@ namespace MultiClip.UI
 
         private static string CreateShortcut(string destFile, string appPath, string args = null)
         {
-            Debug.Assert(destFile.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase));
-
-            //need to do renaming as Shell Object doesn't support unicode file names
-            var destinationFolder = Path.GetDirectoryName(destFile);
-            var asciiDestFile = Path.Combine(destinationFolder, Guid.NewGuid() + ".lnk");
+            // Debug.Assert(destFile.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase));
 
             dynamic shell = null;
             dynamic lnk = null;
 
             try
             {
+                if (File.Exists(destFile))
+                    File.Delete(destFile);
+
                 shell = Activator.CreateInstance(Type.GetTypeFromCLSID(new Guid("72C24DD5-D70A-438B-8A42-98424B88AFB8")));
-                lnk = shell.CreateShortcut(asciiDestFile);
+                lnk = shell.CreateShortcut(destFile);
                 lnk.WorkingDirectory = Path.GetDirectoryName(appPath);
                 lnk.TargetPath = appPath;
                 lnk.Arguments = args;
                 lnk.Save();
-
-                if (File.Exists(destFile))
-                    File.Delete(destFile);
-                File.Move(asciiDestFile, destFile);
 
                 return destFile;
             }

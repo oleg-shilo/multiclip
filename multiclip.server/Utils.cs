@@ -110,6 +110,22 @@ public class Async
 
 public static class ClipboardExtensions
 {
+    public static ulong GetContentHash(this Dictionary<uint, byte[]> data)
+    {
+        ulong checksum = 0;
+
+        unchecked
+        {
+            foreach (uint i in data.Keys)
+                checksum = checksum ^ i;
+
+            foreach (byte[] value in data.Values)
+                for (int i = 0; i < value.Length; i++)
+                    checksum = checksum ^ value[i];
+            return checksum;
+        }
+    }
+
     static public IEnumerable<T> ForEach<T>(this IEnumerable<T> collection, Action<T> action)
     {
         foreach (var item in collection)

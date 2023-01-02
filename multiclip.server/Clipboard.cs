@@ -20,7 +20,7 @@ namespace Win32
         public static extern IntPtr GetForegroundWindow();
     }
 
-    public class Clipboard
+    public static class Clipboard
     {
         [DllImport("user32.dll")]
         static extern bool OpenClipboard(IntPtr hWndNewOwner);
