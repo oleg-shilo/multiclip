@@ -1,10 +1,10 @@
+using MultiClip.UI.Properties;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Serialization;
-using MultiClip.UI.Properties;
 
 namespace MultiClip.UI
 {
@@ -133,7 +133,9 @@ namespace MultiClip.UI
 
         public void About()
         {
-            Operations.MsgBox("Multi-item clipboard buffer.\n\nVersion: " + Assembly.GetExecutingAssembly().GetName().Version + "\nCopyright © Oleg Shilo 2015", "Multiclip");
+            Operations.MsgBox("Multi-item clipboard buffer.\n\n" +
+                "Version: " + Assembly.GetExecutingAssembly().GetName().Version + "\n" +
+                "Copyright © Oleg Shilo 2015-2023", "Multiclip");
         }
 
         public void EditHotKeys()
