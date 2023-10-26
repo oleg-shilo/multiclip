@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Oleg Shilo")]
 [assembly: AssemblyProduct("MultiClip")]
-[assembly: AssemblyCopyright("Copyright © 2015-2020")]
+[assembly: AssemblyCopyright("Copyright © 2015-2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

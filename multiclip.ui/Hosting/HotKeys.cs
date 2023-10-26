@@ -1,3 +1,4 @@
+using MultiClip.UI.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +9,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
-using MultiClip.UI.Utils;
 
 namespace MultiClip.UI
 {
@@ -350,10 +350,12 @@ Ctrl+Shift+Q
 
         void Init()
         {
+            var topScreeY = Screen.AllScreens.Select(x => x.Bounds.Top).Max();
             wnd = new Window
             {
                 Width = 0,
                 Height = 0,
+                Top = topScreeY - 500,
                 ShowInTaskbar = false,
                 WindowStyle = WindowStyle.None
             };
