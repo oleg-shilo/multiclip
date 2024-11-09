@@ -19,7 +19,7 @@ namespace MultiClip.UI
         {
             bool justCreated = SettingsView.EnsureDefaults();
 
-            bool clearAtStartup = !SettingsViewModel.Load().RestoreHistoryAtStartup;
+            Func<bool> clearAtStartup = () => !SettingsViewModel.Load().RestoreHistoryAtStartup;
             ClipboardMonitor.Start(clearAtStartup);
 
             TrayIcon.ShowHistory = (s, a) => HistoryView.Popup();

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -44,7 +45,9 @@ namespace MultiClip.UI
 
         public static int ServerRecoveryDelay = 13000;
 
-        public static void Start(bool clear = false)
+        static bool firstRun = true;
+
+        public static void Start(Func<bool> clear)
         {
             KillAllServers();
             Thread.Sleep(1000);
@@ -54,7 +57,15 @@ namespace MultiClip.UI
                 {
                     try
                     {
-                        StartServer("-start " + (clear ? "-clearall" : "")).WaitForExit();
+                        if (firstRun)
+                        {
+                            firstRun = false;
+                            StartServer("-start " + (clear() ? "-clearall" : "")).WaitForExit();
+                        }
+                        else
+                        {
+                            StartServer("-start").WaitForExit();
+                        }
 
                         Log.WriteLine($"Unexpected server exit.");
 
