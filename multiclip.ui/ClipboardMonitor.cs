@@ -43,7 +43,7 @@ namespace MultiClip.UI
             OnSysShutdown(null, null);
         }
 
-        public static int ServerRecoveryDelay = 13000;
+        public static int ServerRecoveryDelay = 3000;
 
         static bool firstRun = true;
 
@@ -193,6 +193,8 @@ namespace MultiClip.UI
 
         private static int lastRestart = Environment.TickCount;
         static double threshold = TimeSpan.FromMinutes(6).TotalMilliseconds;
+
+        public static int HowLongRunning() => (Environment.TickCount - lastRestart);
 
         public static void Test()
         {

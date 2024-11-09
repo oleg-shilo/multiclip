@@ -45,12 +45,17 @@ namespace MultiClip.UI
             {
                 ClipboardMonitor.Test();
 
-                if ((DateTime.Now - lastCheck) > TimeSpan.FromMinutes(5)) // to ensure that after a long sleep we are restarting
+                if ((DateTime.Now - lastCheck) > TimeSpan.FromMinutes(2)) // to ensure that after a long sleep we are restarting
+                {
+                    ClipboardMonitor.Restart();
+                }
+
+                if (ClipboardMonitor.HowLongRunning() > 3 * 60 * 1000) // restart every 3 minutes
                     ClipboardMonitor.Restart();
 
                 lastCheck = DateTime.Now;
 
-                // refreshing works but I am not convinced it is beneficial enough to be released
+                // refreshing the icon works but I am not convinced it is beneficial enough to be released
                 // it also creates a short flickering effect every minute.
                 // TrayIcon.RefreshIcon();
             };
@@ -58,8 +63,6 @@ namespace MultiClip.UI
             timer.Interval = TimeSpan.FromMinutes(1);
 
             timer.Start();
-
-            var test2 = "The quick brown fox jumps over a lazy dog" + DateTime.Now;
 
             if (justCreated)
                 SettingsView.Popup(); //can pop it up without any side effect only after all messaging is initialized
