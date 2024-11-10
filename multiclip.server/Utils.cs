@@ -227,6 +227,12 @@ public static class ClipboardExtensions
         return !string.IsNullOrWhiteSpace(text);
     }
 
+    public static void DeleteIfDiExists(this string path)
+    {
+        if (path.IsNotEmpty() && Directory.Exists(path))
+            Directory.Delete(path, true);
+    }
+
     public static bool SameAs(this string text, string text2, bool ignoreCase = false)
     {
         return string.Equals(text, text2, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.CurrentCulture);

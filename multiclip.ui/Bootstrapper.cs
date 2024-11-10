@@ -34,7 +34,7 @@ namespace MultiClip.UI
             HotKeysMapping.EmbeddedHandlers[HistoryView.PopupActionName] = HistoryView.Popup;
             HotKeysMapping.EmbeddedHandlers[ClipboardMonitor.ToPlainTextActionName] = ClipboardMonitor.ToPlainText;
             HotKeysMapping.EmbeddedHandlers[HotKeysView.PopupActionName] = HotKeysView.Popup;
-            HotKeysMapping.EmbeddedHandlers[ClipboardMonitor.RestartActionName] = ClipboardMonitor.Restart;
+            HotKeysMapping.EmbeddedHandlers[ClipboardMonitor.RestartActionName] = () => ClipboardMonitor.Restart();
 
             HotKeysMapping.Bind(hotKeys, TrayIcon.InvokeMenu);
 
@@ -47,11 +47,13 @@ namespace MultiClip.UI
 
                 if ((DateTime.Now - lastCheck) > TimeSpan.FromMinutes(2)) // to ensure that after a long sleep we are restarting
                 {
-                    ClipboardMonitor.Restart();
+                    ClipboardMonitor.Restart(true);
                 }
 
-                if (ClipboardMonitor.HowLongRunning() > 3 * 60 * 1000) // restart every 3 minutes
-                    ClipboardMonitor.Restart();
+                if (restartingIsEnabled && ClipboardMonitor.HowLongRunning() > 3 * 60 * 1000) // restart every 3 minutes
+                {
+                    ClipboardMonitor.Restart(true);
+                }
 
                 lastCheck = DateTime.Now;
 
@@ -70,12 +72,14 @@ namespace MultiClip.UI
             SystemEvents.PowerModeChanged += OnPowerChange;
         }
 
+        bool restartingIsEnabled => !File.Exists(Path.Combine(Globals.DataDir, "..", "disable-reset"));
+
         private void OnPowerChange(object s, PowerModeChangedEventArgs e)
         {
             switch (e.Mode)
             {
                 case PowerModes.Resume:
-                    new Task(ClipboardMonitor.Restart).Start();
+                    new Task(() => ClipboardMonitor.Restart()).Start();
                     break;
             }
         }

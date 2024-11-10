@@ -60,6 +60,8 @@ namespace MultiClip.UI
                         if (firstRun)
                         {
                             firstRun = false;
+                            var clearHistory = clear();
+                            Debug.Assert(clearHistory == false, "Multiclip UI is requesting clearing the history.");
                             StartServer("-start " + (clear() ? "-clearall" : "")).WaitForExit();
                         }
                         else
@@ -67,7 +69,15 @@ namespace MultiClip.UI
                             StartServer("-start").WaitForExit();
                         }
 
-                        Log.WriteLine($"Unexpected server exit.");
+                        if (IsScheduledRestart)
+                        {
+                            Log.WriteLine($"Restart is requested.");
+                            IsScheduledRestart = false;
+                        }
+                        else
+                        {
+                            Log.WriteLine($"Unexpected server exit.");
+                        }
 
                         // KillAllServers();
 
@@ -166,8 +176,11 @@ namespace MultiClip.UI
             });
         }
 
-        public static void Restart()
+        internal static bool IsScheduledRestart = false;
+
+        public static void Restart(bool isScheduledRestart = false)
         {
+            IsScheduledRestart = isScheduledRestart;
             lastRestart = Environment.TickCount;
             try
             {

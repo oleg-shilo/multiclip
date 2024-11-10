@@ -24,7 +24,7 @@ namespace MultiClip
         public static bool RestoreHistoryAtStartup = true;
         internal static bool EncryptData = true;
         internal static int CacheEncryptDataMinSize = 1024 * 5;
-        internal static bool RemoveDuplicates = true;
+        internal static bool RemoveDuplicates = false;
         internal static bool AsyncProcessing = true;
     }
 }

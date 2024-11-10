@@ -81,6 +81,11 @@ internal class ClipboardHistory
                     var orphantDirs = Directory.GetDirectories(Globals.DataDir, "*", SearchOption.TopDirectoryOnly)
                                                .Where(d => !hashFileDirs.Contains(d))
                                                .ToArray();
+                    if (orphantDirs.Any())
+                    {
+                        Debug.Assert(false, "Multiclip Server is about to clear orphants from the history.");
+                    }
+
                     excess.Concat(orphantDirs)
                           .ForEach(ClearCaheHistoryOf);
                 }
@@ -96,6 +101,7 @@ internal class ClipboardHistory
 
     public static void ClearAll()
     {
+        Debug.Assert(false, "Multiclip Server is about to clear the history.");
         Directory.GetDirectories(Globals.DataDir, "*", SearchOption.TopDirectoryOnly)
                  .ForEach(ClearCaheHistoryOf);
     }
@@ -207,6 +213,7 @@ internal class ClipboardHistory
 
     public string SaveSnapshot()
     {
+        string snapshotDir = Path.Combine(Globals.DataDir, NextItemId());
         try
         {
             Log.WriteLine($"SaveSnapshot");
@@ -216,8 +223,6 @@ internal class ClipboardHistory
             if (clipboard?.Any() == true)
             {
                 lastSnapshopHash = clipboard.GetContentHash();
-
-                string snapshotDir = Path.Combine(Globals.DataDir, NextItemId());
 
                 Directory.CreateDirectory(snapshotDir);
 
@@ -253,6 +258,8 @@ internal class ClipboardHistory
         }
         catch (Clipboard.LastSessionErrorDetectedException ex)
         {
+            snapshotDir.DeleteIfDiExists();
+
             if (Environment.GetEnvironmentVariable("MULTICLIP_SHOW_ERRORS") != null)
             {
                 var newThread = new Thread(() =>
@@ -271,6 +278,7 @@ internal class ClipboardHistory
         }
         catch
         {
+            snapshotDir.DeleteIfDiExists();
         }
         return null;
     }
