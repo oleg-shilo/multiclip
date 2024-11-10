@@ -50,7 +50,7 @@ namespace MultiClip.UI
                     ClipboardMonitor.Restart(true);
                 }
 
-                if (restartingIsEnabled && ClipboardMonitor.HowLongRunning() > 3 * 60 * 1000) // restart every 3 minutes
+                if (Config.RestartingIsEnabled && ClipboardMonitor.HowLongRunning() > 3 * 60 * 1000) // restart every 3 minutes
                 {
                     ClipboardMonitor.Restart(true);
                 }
@@ -71,8 +71,6 @@ namespace MultiClip.UI
 
             SystemEvents.PowerModeChanged += OnPowerChange;
         }
-
-        bool restartingIsEnabled => !File.Exists(Path.Combine(Globals.DataDir, "..", "disable-reset"));
 
         private void OnPowerChange(object s, PowerModeChangedEventArgs e)
         {
