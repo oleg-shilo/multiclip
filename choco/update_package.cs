@@ -14,7 +14,7 @@ Console.WriteLine("Starting...");
 ServicePointManager.Expect100Continue = true;
 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-var url = "https://github.com/oleg-shilo/multiclip/releases/download/v1.4.4.0/multiclip.v1.4.4.0.7z";
+var url = "https://github.com/oleg-shilo/multiclip/releases/download/v1.4.5.0/multiclip.v1.4.5.0.7z";
 
 var installScript = @"tools\chocolateyInstall.ps1";
 
