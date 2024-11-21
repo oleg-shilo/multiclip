@@ -440,6 +440,8 @@ Ctrl+Shift+Q
 
         //public static bool PauseAllHandlers = false;
 
+        public DateTime LastKeyInputTime = DateTime.MinValue;
+
         IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             const int WM_HOTKEY = 0x0312;
@@ -447,6 +449,8 @@ Ctrl+Shift+Q
             {
                 case WM_HOTKEY:
                     {
+                        LastKeyInputTime = DateTime.Now;
+
                         var id = wParam.ToInt32();
                         if (handlers.ContainsKey(id))
                         {

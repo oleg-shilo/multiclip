@@ -16,7 +16,7 @@ namespace MultiClip.UI
 {
     // Using RESX file immediately adds 17 false-positives ton VirusTotal (used by choco).
     // Even if RESX file is EMPTY!!!! Shocking.
-    // Meaning antiviruses treat any custom resource sections as a threat. Madness.
+    // Meaning antiviruses treat any custom resource sections as a threat. Madness!!!
     // using resources embedded as part of XAML compilation seems fine.
     // So piggybacking on XAML resources.
     public static class AppResources
@@ -89,7 +89,9 @@ namespace MultiClip.UI
             // #if DEBUG
             ni.ContextMenuStrip.Items.Add("-");
             ni.ContextMenuStrip.Items.Add("Reset", null, Rehook);
-            //ni.ContextMenuStrip.Items.Add("Test", null, Test);
+#if DEBUG
+            ni.ContextMenuStrip.Items.Add("Test", null, Test);
+#endif
             // #endif
             ni.ContextMenuStrip.Items.Add("-");
             ni.ContextMenuStrip.Items.Add("Exit", null, Exit);

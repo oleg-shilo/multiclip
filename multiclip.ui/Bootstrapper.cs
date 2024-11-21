@@ -25,7 +25,7 @@ namespace MultiClip.UI
             TrayIcon.ShowHistory = (s, a) => HistoryView.Popup();
             TrayIcon.ShowSettings = (s, a) => SettingsView.Popup();
             TrayIcon.Rehook = (s, a) => { ClipboardMonitor.Restart(); TrayIcon.RefreshIcon(); };
-            TrayIcon.Test = (s, a) => ClipboardMonitor.Test();
+            TrayIcon.Test = (s, a) => ClipboardMonitor.RestartIfFaulty();
             TrayIcon.Exit = (s, a) => this.Close();
             TrayIcon.Init();
 
@@ -43,26 +43,59 @@ namespace MultiClip.UI
 
             timer.Tick += (s, e) =>
             {
-                ClipboardMonitor.Test();
 
-                if ((DateTime.Now - lastCheck) > TimeSpan.FromMinutes(2)) // to ensure that after a long sleep we are restarting
+                try
                 {
-                    ClipboardMonitor.Restart(true);
+                    // to test the clipboard monitor
+                    var restarted = ClipboardMonitor.RestartIfFaulty();
+
+                    if (!restarted)
+                    {
+                        // keeping all three checks even though some of them overlap with each other
+                        var needToRestart = false;
+
+                        // if there was no keyboard input for a long time, we can assume that the user is not using the app
+                        // ideally it should be any key press input but at the moment it's actually the time since the last hot key registered
+                        if (HotKeys.Instance.LastKeyInputTime.IntervalFromNow() > TimeSpan.FromMinutes(3))
+                        {
+                            needToRestart = true;
+                        }
+
+                        // ensure that after a long sleep we are restarting
+                        if (lastCheck.IntervalFromNow() > TimeSpan.FromMinutes(2))
+                        {
+                            needToRestart = true;
+                        }
+
+                        // restart every 3 minutes because... why not? :o)
+                        // this is a bit of a hack to ensure that the app is running
+                        if (Config.RestartingIsEnabled && ClipboardMonitor.LastRestart.IntervalFromNow() > TimeSpan.FromMinutes(3))
+                        {
+                            needToRestart = true;
+                        }
+
+                        if (needToRestart)
+                        {
+                            ClipboardMonitor.Restart(true);
+                        }
+
+                        // refreshing the icon works but I am not convinced it is beneficial enough to be released
+                        // it also creates a short flickering effect every minute.
+                        // TrayIcon.RefreshIcon();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.WriteLine(ex.ToString());
+                }
+                finally
+                {
+                    lastCheck = DateTime.Now;
                 }
 
-                if (Config.RestartingIsEnabled && ClipboardMonitor.HowLongRunning() > 3 * 60 * 1000) // restart every 3 minutes
-                {
-                    ClipboardMonitor.Restart(true);
-                }
-
-                lastCheck = DateTime.Now;
-
-                // refreshing the icon works but I am not convinced it is beneficial enough to be released
-                // it also creates a short flickering effect every minute.
-                // TrayIcon.RefreshIcon();
             };
 
-            timer.Interval = TimeSpan.FromMinutes(1);
+            timer.Interval = TimeSpan.FromSeconds(30);
 
             timer.Start();
 
@@ -77,7 +110,11 @@ namespace MultiClip.UI
             switch (e.Mode)
             {
                 case PowerModes.Resume:
-                    new Task(() => ClipboardMonitor.Restart()).Start();
+                    new Task(() =>
+                    {
+                        Thread.Sleep(5000);
+                        ClipboardMonitor.Restart();
+                    }).Start();
                     break;
             }
         }
