@@ -18,13 +18,13 @@ var url = "https://github.com/oleg-shilo/multiclip/releases/download/v1.4.5.0/mu
 
 var installScript = @"tools\chocolateyInstall.ps1";
 
-var cheksum = calcChecksum(url);
+var checksum = calcChecksum(url);
 // var cheksum = "E1809AD6433A91B2FF4803E7F4B15AE0FA88905A28949EAC5590F7D9FD9BE9C3";
-Console.WriteLine(cheksum);
+Console.WriteLine(checksum);
 
 var code = File.ReadAllText(installScript + ".template")
                .Replace("$url = ???", "$url = '" + url + "'")
-               .Replace("$checksum = ???", "$cheksum = '" + cheksum + "'");
+               .Replace("$checksum = ???", "$checksum = '" + checksum + "'");
 
 File.WriteAllText(installScript, code);
 Console.WriteLine("--------------");
@@ -40,8 +40,8 @@ string calcChecksum(string url)
     DownloadBinary(url, file, (step, total) => Console.Write("\r{0}%\r", (int)(step * 100.0 / total)));
     Console.WriteLine();
 
-    var cheksum = run(@"C:\ProgramData\chocolatey\tools\checksum.exe", "-t sha256 -f \"" + file + "\"", echo: false).Trim();
-    return cheksum;
+    var checksum = run(@"C:\ProgramData\chocolatey\tools\checksum.exe", "-t sha256 -f \"" + file + "\"", echo: false).Trim();
+    return checksum;
 }
 
 void DownloadBinary(string url, string destinationPath, Action<long, long> onProgress = null)

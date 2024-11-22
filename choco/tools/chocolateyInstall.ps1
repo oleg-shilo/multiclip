@@ -14,7 +14,7 @@ Stop-Process -Name "multiclip.server" -ErrorAction SilentlyContinue
 
 $installDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
-$cheksum = 'BBD16CCF29E49EF7DE9CE265A52EFEBC678C9201B0A9716AF0D451871CEDB204'
+$checksum = 'BBD16CCF29E49EF7DE9CE265A52EFEBC678C9201B0A9716AF0D451871CEDB204'
 $checksumType = "sha256"
 
 # Download and unpack a zip file
