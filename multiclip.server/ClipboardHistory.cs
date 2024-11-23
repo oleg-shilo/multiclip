@@ -78,15 +78,27 @@ internal class ClipboardHistory
 
                     var hashFileDirs = hashFiles.Select(Path.GetDirectoryName);
 
-                    var orphantDirs = Directory.GetDirectories(Globals.DataDir, "*", SearchOption.TopDirectoryOnly)
-                                               .Where(d => !hashFileDirs.Contains(d))
-                                               .ToArray();
-                    if (orphantDirs.Any())
+                    var orphanDirs = Directory.GetDirectories(Globals.DataDir, "*", SearchOption.TopDirectoryOnly)
+                                              .Where(d => !Directory.GetFiles(d, "*.hash").Any())
+                                              .ToArray();
+                    if (orphanDirs.Any())
                     {
-                        Debug.Assert(false, "Multiclip Server is about to clear orphants from the history.");
+                        foreach (var item in orphanDirs)
+                        {
+                            Thread.Sleep(100); // hard to believe but "*.hash" may appear with the dalay
+
+                            if (!Directory.GetFiles(item, "*.hash").Any())
+                            {
+                                // Debug.WriteLine("Orphan: " + item);
+#if DEBUG
+                                Process.Start("explorer.exe", orphanDirs.FirstOrDefault());
+                                Debug.Assert(false, "Multiclip Server is about to clear orphans from the history.");
+#endif
+                            }
+                        }
                     }
 
-                    excess.Concat(orphantDirs)
+                    excess.Concat(orphanDirs)
                           .ForEach(ClearCaheHistoryOf);
                 }
             }
