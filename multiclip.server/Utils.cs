@@ -221,6 +221,11 @@ public static class ClipboardExtensions
     {
         return string.IsNullOrWhiteSpace(text);
     }
+    public static string EscapePath(this string text)
+    {
+        Path.GetInvalidFileNameChars().ForEach(c => text = text.Replace(c.ToString(), "_"));
+        return text;
+    }
 
     public static bool IsNotEmpty(this string text)
     {

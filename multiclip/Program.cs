@@ -38,6 +38,7 @@ namespace multiclip.schim
             }
             else
             {
+                // doing scrambling/unscrambling simply because Chocolatey triggers false-positives on RESX files
                 AppDomain.CurrentDomain.ResourceResolve += CurrentDomain_ResourceResolve;
                 var scambledAsm = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "multiclip.ui");
                 asm = Assembly.Load(Scrumble(toScramble: false, scambledAsm));

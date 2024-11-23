@@ -151,6 +151,7 @@ namespace MultiClip.UI
     {
         public static string GetPath(this Environment.SpecialFolder specialFolder)
             => Environment.GetFolderPath(specialFolder);
+        public static TimeSpan IntervalFromNow(this DateTime time) => DateTime.Now - time;
     }
 
     internal static class StringExtensions

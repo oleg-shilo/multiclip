@@ -181,7 +181,7 @@ namespace MultiClip.UI
         public static void Restart(bool isScheduledRestart = false)
         {
             IsScheduledRestart = isScheduledRestart;
-            lastRestart = Environment.TickCount;
+            LastRestart = DateTime.Now;
             try
             {
                 Log.Enabled = false;
@@ -199,33 +199,31 @@ namespace MultiClip.UI
         }
 
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
-        private static int lastRestart = Environment.TickCount;
-        static double threshold = TimeSpan.FromMinutes(6).TotalMilliseconds;
+        public static DateTime LastRestart = DateTime.Now;
 
-        public static int HowLongRunning() => (Environment.TickCount - lastRestart);
-
-        public static void Test()
+        public static bool RestartIfFaulty()
         {
-            var serverRunningPeriod = (Environment.TickCount - lastRestart);
-            if (serverRunningPeriod > threshold)
-            {
-                Restart();
-                Thread.Sleep(1500);
-            }
+            bool restarted = false;
 
             var wnd = FindWindow(null, Globals.ClipboardWatcherWindow);
             if (wnd != null)
             {
+                // prime the clipboard monitor channel with a test content
                 bool success = TestClipboard(wnd);
 
                 if (!success)
+                {
                     Restart();
+                    restarted = true;
+                }
             }
+
+            return restarted;
         }
 
         private static bool TestClipboard(IntPtr wnd)

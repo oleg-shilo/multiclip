@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using MultiClip;
 using MultiClip.Server;
 using Clipboard = Win32.Clipboard;
@@ -75,31 +76,23 @@ internal class ClipboardHistory
                                           .OrderByDescending(x => x)
                                           .Skip(Config.MaxHistoryDepth)
                                           .ToArray();
-
-                    var hashFileDirs = hashFiles.Select(Path.GetDirectoryName);
-
-                    var orphanDirs = Directory.GetDirectories(Globals.DataDir, "*", SearchOption.TopDirectoryOnly)
-                                              .Where(d => !Directory.GetFiles(d, "*.hash").Any())
-                                              .ToArray();
-                    if (orphanDirs.Any())
+                    Task.Run(() =>
                     {
-                        foreach (var item in orphanDirs)
+                        Thread.Sleep(1000); //give some time for all hash files to be created 
+                        lock (typeof(ClipboardHistory))
                         {
-                            Thread.Sleep(100); // hard to believe but "*.hash" may appear with the dalay
-
-                            if (!Directory.GetFiles(item, "*.hash").Any())
+                            var orphantDirs = Directory.GetDirectories(Globals.DataDir, "*", SearchOption.TopDirectoryOnly)
+                                                   .Where(d => !Directory.GetFiles(d, "*.hash").Any())
+                                                   .ToArray();
+                            if (orphantDirs.Any())
                             {
-                                // Debug.WriteLine("Orphan: " + item);
-#if DEBUG
-                                Process.Start("explorer.exe", orphanDirs.FirstOrDefault());
                                 Debug.Assert(false, "Multiclip Server is about to clear orphans from the history.");
-#endif
+                                orphantDirs.ForEach(ClearCaheHistoryOf);
                             }
                         }
-                    }
+                    });
 
-                    excess.Concat(orphanDirs)
-                          .ForEach(ClearCaheHistoryOf);
+                    excess.ForEach(ClearCaheHistoryOf);
                 }
             }
             catch { }
@@ -124,6 +117,7 @@ internal class ClipboardHistory
            // "0000C013.Ole Private Data," +
            // "0000C00E.Object Descriptor," +
            // "0000C004.Native," +
+           "0000C007.FileNameW," +
            // "00000007.00000010.Locale," +
            "0000000D.UnicodeText," +
            // "0000C00B.Embed Source," +
@@ -242,7 +236,7 @@ internal class ClipboardHistory
 
                 foreach (uint item in clipboard.Keys.OrderBy(x => x))
                 {
-                    string formatFile = Path.Combine(snapshotDir, $"{item:X8}.{item.ToFormatName()}.cbd");
+                    string formatFile = Path.Combine(snapshotDir, $"{item:X8}.{item.ToFormatName().EscapePath()}.cbd");
 
                     var array = new byte[0];
                     try
@@ -253,13 +247,21 @@ internal class ClipboardHistory
 
                     if (array.Any())
                     {
-                        if (uniqunessFormats.ContainsKey(item))
-                            bytesHash.Add(array);
-
+                        // cache large data chunks only to speedup the processing (e.g. compare, load) of the captured encrypted content
                         if (Config.EncryptData && Config.CacheEncryptDataMinSize < array.Length)
+                        {
+                            // It's OK to cache raw data here as it is a clipboard content that is available to every user app here anyway.
+                            // Though the data will always be encrypted when it hit's the permanent storage. 
                             Cache[formatFile] = array;
+                        }
+                        try
+                        {
+                            var writtenData = WritePrivateData(formatFile, array);
+                            if (uniqunessFormats.ContainsKey(item))
+                                bytesHash.Add(array);
 
-                        WritePrivateData(formatFile, array);
+                        }
+                        catch (Exception e) { }
                     }
                 }
 
@@ -355,15 +357,19 @@ internal class ClipboardHistory
         }
     }
 
-    static void WritePrivateData(string file, byte[] data)
+    static byte[] WritePrivateData(string file, byte[] data)
     {
         if (Config.EncryptData)
         {
             var bytes = ProtectedData.Protect(data, entropy, DataProtectionScope.CurrentUser);
             File.WriteAllBytes(file, bytes);
+            return bytes;
         }
         else
+        {
             File.WriteAllBytes(file, data);
+            return data;
+        }
     }
 
     public static byte[] ReadFormatData(string dir, int format)
