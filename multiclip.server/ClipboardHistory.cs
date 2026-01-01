@@ -18,7 +18,7 @@ internal class ClipboardHistory
 
     public string NextItemId()
     {
-        return DateTime.Now.ToUniversalTime().Ticks.ToString("X8");
+        return DateTime.Now.ToUniversalTime().Ticks.ToString("X16");
     }
 
     static public DateTime ToTimestamp(string dir)
@@ -47,6 +47,8 @@ internal class ClipboardHistory
 
     public void MakeSnapshot()
     {
+        // Note MakeSnapshot can only be called synchronously.
+        // Another instance of the `multiclip.server.exe -capture` should not be running at the same time.
         lock (typeof(ClipboardHistory))
         {
             try
@@ -71,23 +73,21 @@ internal class ClipboardHistory
                         hashFiles = hashFiles.Except(duplicates).ToArray();
                     }
 
+                    // clean up orphant dirs (without hash files)
+                    var orphantDirs = Directory.GetDirectories(Globals.DataDir, "*", SearchOption.TopDirectoryOnly)
+                                          .Where(d => !Directory.GetFiles(d, "*.hash").Any())
+                                          .ToArray();
+                    if (orphantDirs.Any())
+                    {
+                        Debug.Assert(false, "Multiclip Server is about to clear orphans from the history.");
+                        orphantDirs.ForEach(ClearCaheHistoryOf);
+                    }
+
                     //purge snapshots history excess
                     var excess = hashFiles.Select(Path.GetDirectoryName)
                                           .OrderByDescending(x => x) // the dir name is a timestamp (universal time) in hex format
                                           .Skip(Config.MaxHistoryDepth)
                                           .ToArray();
-
-                    lock (typeof(ClipboardHistory))
-                    {
-                        var orphantDirs = Directory.GetDirectories(Globals.DataDir, "*", SearchOption.TopDirectoryOnly)
-                                              .Where(d => !Directory.GetFiles(d, "*.hash").Any())
-                                              .ToArray();
-                        if (orphantDirs.Any())
-                        {
-                            Debug.Assert(false, "Multiclip Server is about to clear orphans from the history.");
-                            orphantDirs.ForEach(ClearCaheHistoryOf);
-                        }
-                    }
 
                     excess.ForEach(ClearCaheHistoryOf);
                 }
@@ -169,7 +169,7 @@ internal class ClipboardHistory
                             }
                         }
                     }
-                    catch { }
+                    catch { } // losing one of the formats is OK; it happens sometimes
 
                     hash.Add(bytes);
                 }
@@ -257,7 +257,10 @@ internal class ClipboardHistory
                             if (uniqunessFormats.ContainsKey(item))
                                 bytesHash.Add(array);
                         }
-                        catch (Exception e) { }
+                        catch (Exception e)
+                        {
+                            Log.WriteLine($"SaveSnapshot Error: " + e);
+                        }
                     }
                 }
 
@@ -326,18 +329,18 @@ internal class ClipboardHistory
                             else
                                 bytes = ReadPrivateData(file);
                         }
-                        catch { }
+                        catch { } // OK to fail;  the OS clipboard service may not support some formats
 
                         if (bytes.Any())
                             data[format] = bytes;
                     }
-                    catch { }
+                    catch { } // OK to fail;  the OS clipboard service may not support some formats
                 }
 
                 if (data.Any())
                     Win32.Clipboard.SetClipboard(data);
             }
-            catch { }
+            catch { } // OK to fail;  the OS clipboard service may not support some formats
         }
     }
 
