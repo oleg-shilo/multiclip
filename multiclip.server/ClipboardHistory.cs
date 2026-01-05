@@ -18,7 +18,7 @@ internal class ClipboardHistory
 
     public string NextItemId()
     {
-        return DateTime.Now.ToUniversalTime().Ticks.ToString("X8");
+        return DateTime.Now.ToUniversalTime().Ticks.ToString("X16");
     }
 
     static public DateTime ToTimestamp(string dir)
@@ -47,6 +47,8 @@ internal class ClipboardHistory
 
     public void MakeSnapshot()
     {
+        // Note MakeSnapshot can only be called synchronously.
+        // Another instance of the `multiclip.server.exe -capture` should not be running at the same time.
         lock (typeof(ClipboardHistory))
         {
             try
@@ -71,26 +73,21 @@ internal class ClipboardHistory
                         hashFiles = hashFiles.Except(duplicates).ToArray();
                     }
 
+                    // clean up orphant dirs (without hash files)
+                    var orphantDirs = Directory.GetDirectories(Globals.DataDir, "*", SearchOption.TopDirectoryOnly)
+                                          .Where(d => !Directory.GetFiles(d, "*.hash").Any())
+                                          .ToArray();
+                    if (orphantDirs.Any())
+                    {
+                        Debug.Assert(false, "Multiclip Server is about to clear orphans from the history.");
+                        orphantDirs.ForEach(ClearCaheHistoryOf);
+                    }
+
                     //purge snapshots history excess
                     var excess = hashFiles.Select(Path.GetDirectoryName)
-                                          .OrderByDescending(x => x)
+                                          .OrderByDescending(x => x) // the dir name is a timestamp (universal time) in hex format
                                           .Skip(Config.MaxHistoryDepth)
                                           .ToArray();
-                    Task.Run(() =>
-                    {
-                        Thread.Sleep(1000); //give some time for all hash files to be created 
-                        lock (typeof(ClipboardHistory))
-                        {
-                            var orphantDirs = Directory.GetDirectories(Globals.DataDir, "*", SearchOption.TopDirectoryOnly)
-                                                   .Where(d => !Directory.GetFiles(d, "*.hash").Any())
-                                                   .ToArray();
-                            if (orphantDirs.Any())
-                            {
-                                Debug.Assert(false, "Multiclip Server is about to clear orphans from the history.");
-                                orphantDirs.ForEach(ClearCaheHistoryOf);
-                            }
-                        }
-                    });
 
                     excess.ForEach(ClearCaheHistoryOf);
                 }
@@ -172,7 +169,7 @@ internal class ClipboardHistory
                             }
                         }
                     }
-                    catch { }
+                    catch { } // losing one of the formats is OK; it happens sometimes
 
                     hash.Add(bytes);
                 }
@@ -251,7 +248,7 @@ internal class ClipboardHistory
                         if (Config.EncryptData && Config.CacheEncryptDataMinSize < array.Length)
                         {
                             // It's OK to cache raw data here as it is a clipboard content that is available to every user app here anyway.
-                            // Though the data will always be encrypted when it hit's the permanent storage. 
+                            // Though the data will always be encrypted when it hit's the permanent storage.
                             Cache[formatFile] = array;
                         }
                         try
@@ -259,15 +256,27 @@ internal class ClipboardHistory
                             var writtenData = WritePrivateData(formatFile, array);
                             if (uniqunessFormats.ContainsKey(item))
                                 bytesHash.Add(array);
-
                         }
-                        catch (Exception e) { }
+                        catch (Exception e)
+                        {
+                            Log.WriteLine($"SaveSnapshot Error: " + e);
+                        }
                     }
                 }
 
                 string shapshotHashFile = Path.Combine(snapshotDir, bytesHash + ".hash");
                 File.WriteAllText(shapshotHashFile, "");
                 Console.WriteLine($"Snapshot saved: {shapshotHashFile}");
+#if DEBUG
+                if (clipboard.ContainsKey(1)) // text format; note, the location of the file is in the secured user profile and it's only enabled in the debug mode (investigation)
+                {
+                    var content = Encoding.ASCII.GetString(clipboard[1]);
+                    if (content.Length > 5)
+                        content = content.Substring(0, 5) + "...";
+                    File.WriteAllText(Path.Combine(snapshotDir, bytesHash + ".cnt"), content);
+                }
+
+#endif
                 return shapshotHashFile;
             }
         }
@@ -323,18 +332,18 @@ internal class ClipboardHistory
                             else
                                 bytes = ReadPrivateData(file);
                         }
-                        catch { }
+                        catch { } // OK to fail;  the OS clipboard service may not support some formats
 
                         if (bytes.Any())
                             data[format] = bytes;
                     }
-                    catch { }
+                    catch { } // OK to fail;  the OS clipboard service may not support some formats
                 }
 
                 if (data.Any())
                     Win32.Clipboard.SetClipboard(data);
             }
-            catch { }
+            catch { } // OK to fail;  the OS clipboard service may not support some formats
         }
     }
 
