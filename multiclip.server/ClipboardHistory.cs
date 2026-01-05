@@ -267,11 +267,13 @@ internal class ClipboardHistory
 
                 string shapshotHashFile = Path.Combine(snapshotDir, bytesHash + ".hash");
                 File.WriteAllText(shapshotHashFile, "");
+                Console.WriteLine($"Snapshot saved: {shapshotHashFile}");
                 return shapshotHashFile;
             }
         }
         catch (Clipboard.LastSessionErrorDetectedException ex)
         {
+            Console.WriteLine($"Snapshot deleted (2): {snapshotDir}");
             snapshotDir.DeleteIfDiExists();
 
             if (Environment.GetEnvironmentVariable("MULTICLIP_SHOW_ERRORS") != null)
@@ -292,6 +294,7 @@ internal class ClipboardHistory
         }
         catch
         {
+            Console.WriteLine($"Snapshot deleted (1): {snapshotDir}");
             snapshotDir.DeleteIfDiExists();
         }
         return null;

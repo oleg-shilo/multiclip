@@ -236,7 +236,11 @@ namespace MultiClip.UI
         public static void ClearAll()
         {
             Directory.GetDirectories(Globals.DataDir, "*", SearchOption.TopDirectoryOnly)
-                     .ForEach(dir => dir.TryDeleteDir());
+                     .ForEach(dir =>
+                     {
+                         Log.WriteLine("Removing history item 1: " + dir);
+                         dir.TryDeleteDir();
+                     });
         }
 
         public static void ClearDuplicates()

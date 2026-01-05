@@ -90,7 +90,7 @@ namespace Win32
             {
                 bool hasReadingErrors = File.ReadAllLines(logFile)
                                             .Any(x => x.EndsWith("started -> ")
-                                                 || x.EndsWith("Error"));
+                                                 && x.EndsWith("Error"));
 
                 if (hasReadingErrors)
                 {

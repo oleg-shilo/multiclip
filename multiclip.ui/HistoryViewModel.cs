@@ -20,6 +20,7 @@ namespace MultiClip.UI
         {
             if (item != null)
             {
+                Log.WriteLine("Removing history item 2: " + item.Location);
                 item.Location.TryDeleteDir();
                 Items.Remove(item);
             }
@@ -27,7 +28,11 @@ namespace MultiClip.UI
 
         public void RemoveAll()
         {
-            Items.ForEach(item=>item.Location.TryDeleteDir());
+            Items.ForEach(item =>
+            {
+                Log.WriteLine("Removing history item (3): " + item.Location);
+                item.Location.TryDeleteDir();
+            });
             Items.Clear();
         }
 
